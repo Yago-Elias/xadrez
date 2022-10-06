@@ -1,3 +1,4 @@
+// Definindo constantes para cada peça de xadrez com base na tabela Unicode
 #define B_REI "\u2654"
 #define B_RAINHA "\u2655"
 #define B_TORRE "\u2656"
@@ -11,6 +12,7 @@
 #define P_CAVALO "\u265e"
 #define P_P "\u265f"
 
+// Estrutura para definir uma peça de xadrez
 struct Soldado {
     char nome[10];
     int cor;
@@ -18,8 +20,17 @@ struct Soldado {
     int coluna;
 };
 
+// função responsável por inicializar o tabuleiro de xadrez
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
+
+/*
+com base na entrada do usuário a função retorna a "linha" e "coluna" da matriz, correspondente 
+a posição ou ao movimento da peça de xadrez
+*/
 void coordenada (int linha, char coluna, int *i, int *j);
-int cor_fundo (int i, int j);
+
+// funçao que movimenta as peças no tabuleiro
 void mover_peca (struct Soldado *tabuleiro[8][8], struct Soldado peca[], int i, int j);
+
+// mostra o tabuleiro de xadrez
 void interface (struct Soldado *tabuleiro[8][8]);
