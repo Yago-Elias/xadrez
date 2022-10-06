@@ -11,10 +11,13 @@ int main() {
     // vetor que guarda as peças pretas
     struct Soldado peca_p[16];
 
+<<<<<<< HEAD
     /*
     linha representa a posição da peça e des_linha a posição de destino da peça, apenas
     em relação a linha onde se encontra a peça
     */
+=======
+>>>>>>> 0e83691510cfbcc9106137fd806ce882e3b37f03
     int linha, des_linha, i, j;
 
     /*
