@@ -11,13 +11,10 @@ int main() {
     // vetor que guarda as peças pretas
     struct Soldado peca_p[16];
 
-<<<<<<< HEAD
     /*
     linha representa a posição da peça e des_linha a posição de destino da peça, apenas
     em relação a linha onde se encontra a peça
     */
-=======
->>>>>>> 0e83691510cfbcc9106137fd806ce882e3b37f03
     int linha, des_linha, i, j;
 
     /*
@@ -33,8 +30,10 @@ int main() {
     printf("Lance: ");
     scanf("%c%c%d%c%d", &peca, &coluna, &linha, &des_coluna, &des_linha);
 
+    // calcula o índice da matriz com relação a linha e coluna
     coordenada (linha, coluna, &i, &j);
 
+    // imprime na tela o tabuleiro e as peças do jogo
     interface (tabuleiro);
     return 0;
 }
