@@ -2,8 +2,13 @@
 #include <string.h>
 #include "f_26.h"
 
+// função que retorna o índice da matriz de acordo com a linha e coluna
 void coordenada (int linha, char coluna, int *i, int *j)
 {
+    /*
+    para cada letra de a-h é associado a um número da coluna equivalente
+    a cada letra do tabuleiro
+    */
     switch (coluna)
     {
         case 'a':
@@ -42,6 +47,7 @@ void coordenada (int linha, char coluna, int *i, int *j)
     }
 }
 
+// alterna os valores para a cor de fundo para cada peça
 int cor_fundo (int i, int j)
 {
     if ((i + j) % 2 == 0)
@@ -50,10 +56,15 @@ int cor_fundo (int i, int j)
         return 44;
 }
 
+/*
+tanto o tabuleiro quanto os vetores onde ficam armazenados os dados das peças,
+são inicializados
+*/
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[])
 {
     int i, j, cor = 0;
     
+    // preenche o nome das peças
     strcpy (pb[0].nome, "torre_d");
     strcpy (pb[1].nome, "cavalo_d");
     strcpy (pb[2].nome, "bispo_d");
@@ -90,6 +101,7 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
     strcpy (pp[14].nome, "p_p_d");
     strcpy (pp[15].nome, "p_p_d");
 
+    // define o tipo de cor e as posições iniciais das peças
     for (i = 0; i < 16; ++i)
     {
         pp[i].cor = cor;
@@ -116,6 +128,10 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
         }
     }
 
+    /*
+    passa por referência as peças dos vetores para a matriz(tabuleiro), definindo
+    as posições iniciais das peças
+    */
     for (i = 0; i < 8; ++i)
     {
         tabuleiro[0][i] = &pp[i];
@@ -128,7 +144,8 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
 void mover_peca (struct Soldado *tabuleiro[8][8], struct Soldado peca[], int des_i, int des_j)
 {
     char cor = tabuleiro[des_i-1][des_j]->nome[0];
-    //movimento das peças pretas
+
+    /* ========================== MOVIMENTO DAS PEÇAS PRETAS ========================== */
     if (cor == 'p')
     {
         if (tabuleiro[des_i][des_j] == NULL)
@@ -143,11 +160,12 @@ void mover_peca (struct Soldado *tabuleiro[8][8], struct Soldado peca[], int des
     }
     else
     {
+        /* ========================== MOVIMENTO DAS PEÇAS PRETAS ========================== */
         printf("0");
-        //movimento das peças brancas
     }
 }
 
+// imprime o tabuleiro na tela
 void interface (struct Soldado *tabuleiro[8][8])
 {
     int i, j, bg;
@@ -157,10 +175,17 @@ void interface (struct Soldado *tabuleiro[8][8])
         for (j = 0; j < 8; ++j)
         {
             bg = cor_fundo (i, j);
+
+            /*
+            se a posição na matriz for diferente de NULL significa que há uma referência
+            para alguma peça
+            */
             if (tabuleiro[i][j] != NULL)
             {
+                // imprime a cor de fundo de acordo com a cor definida na inicialização
                 if (tabuleiro[i][j]->cor == 0)
                 {
+                    // verifica qual peça está armazenada e imprime de acordo com a mesma
                     if (!strcmp (tabuleiro[i][j]->nome, "p_d"))
                         printf("\033[%dm %s \033[m", bg, B_P);
                     if (!strcmp (tabuleiro[i][j]->nome, "torre_d"))
@@ -217,7 +242,7 @@ void interface (struct Soldado *tabuleiro[8][8])
                 }
             }
             else
-                printf("\033[%dm   \033[m", bg);
+                printf("\033[%dm   \033[m", bg); // imprime apenas a cor da casa 
         }
         printf("\n");
     }
