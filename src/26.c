@@ -6,6 +6,7 @@ int main() {
     struct Soldado peca_b[16];
     struct Soldado peca_p[16];
 
+    //linha
     int linha, des_linha, i, j;
     char peca, coluna, des_coluna;
 
