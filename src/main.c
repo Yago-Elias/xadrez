@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "f_26.h"
+#include "lib.h"
 
 int main() {
     // declarando uma matriz de ponteiros para representar o tabuleiro de xadrez

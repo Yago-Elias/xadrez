@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "f_26.h"
+#include "lib.h"
 
 // função que retorna o índice da matriz de acordo com a linha e coluna
 void coordenada (int linha, char coluna, int *i, int *j)
