@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "lib.h"
+
+void menu (int entrada)
+{}
 
 // função que retorna o índice da matriz de acordo com a linha e coluna
 void coordenada (int linha, char coluna, int *i, int *j)
@@ -105,7 +109,9 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
     for (i = 0; i < 16; ++i)
     {
         pp[i].cor = cor;
+        pp[i].capturada = 0;
         pb[i].cor = cor;
+        pb[i].capturada = 0;
 
         if (cor)
             cor = 0;
@@ -129,7 +135,7 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
     }
 
     /*
-    passa por referência as peças dos vetores para a matriz(tabuleiro), definindo
+    passa por referência as peças dos vetores para a matriz(tabuleiro) 8x8, definindo
     as posições iniciais das peças
     */
     for (i = 0; i < 8; ++i)
@@ -143,10 +149,10 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
 
 void mover_peca (struct Soldado *tabuleiro[8][8], struct Soldado peca[], int des_i, int des_j)
 {
-    char cor = tabuleiro[des_i-1][des_j]->nome[0];
+    int cor_peca = tabuleiro[des_i-1][des_j]->cor;
 
     /* ========================== MOVIMENTO DAS PEÇAS PRETAS ========================== */
-    if (cor == 'p')
+    if (cor_peca == 0)
     {
         if (tabuleiro[des_i][des_j] == NULL)
         {
@@ -160,18 +166,33 @@ void mover_peca (struct Soldado *tabuleiro[8][8], struct Soldado peca[], int des
     }
     else
     {
-        /* ========================== MOVIMENTO DAS PEÇAS PRETAS ========================== */
-        printf("0");
+        /* ========================== MOVIMENTO DAS PEÇAS BRANCAS ========================== */
+        printf("branca\n");
     }
 }
 
 // imprime o tabuleiro na tela
 void interface (struct Soldado *tabuleiro[8][8])
 {
-    int i, j, bg;
+    int i, j, bg, cor_borda=45;
+    char letra=104;
 
+    // dá uma pequena pausa antes de realizar qualquer operação
+    system ("pause");
+
+    // limpa o termianl
+    system ("clear");
+
+    // imprime a cor da borda superior
+    printf ("\n\033[%dm                             \033[m\n", cor_borda);
     for (i = 0; i < 8; ++i)
     {
+        // impreme a letra correspondente a coluna no tabuleiro e a cor da borda esquerdo
+        printf ("\033[%dm %c \033[m", cor_borda, letra);
+
+        // soma com o índice para ir para a próxima letra começando a partir de 'a'
+        letra -= 1;
+
         for (j = 0; j < 8; ++j)
         {
             bg = cor_fundo (i, j);
@@ -242,8 +263,12 @@ void interface (struct Soldado *tabuleiro[8][8])
                 }
             }
             else
-                printf("\033[%dm   \033[m", bg); // imprime apenas a cor da casa 
+                // imprime apenas a cor da casa do tabuleiro
+                printf("\033[%dm   \033[m", bg);
         }
-        printf("\n");
+        // imprime a cor da borda direito
+        printf("\033[%dm  \033[m\n", cor_borda);
     }
+    // imprime os núemro das colunas e também a cor da borda inferior
+    printf ("\033[%dm    1  2  3  4  5  6  7  8   \033[m\n", cor_borda);
 }

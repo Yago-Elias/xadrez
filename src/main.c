@@ -23,17 +23,21 @@ int main() {
     */
     char peca, coluna, des_coluna;
 
-    // posiciona todas as peças no tabuleiro, no incio da partida
-    inicializar (tabuleiro, peca_b, peca_p);
+    while (1)
+    {
+        // posiciona todas as peças no tabuleiro, no incio da partida
+        inicializar (tabuleiro, peca_b, peca_p);
 
-    // lances do jogador
-    printf("Lance: ");
-    scanf("%c%c%d%c%d", &peca, &coluna, &linha, &des_coluna, &des_linha);
+        // lances do jogador
+        printf("\nLance: ");
+        scanf("%c%c%d%c%d", &peca, &coluna, &linha, &des_coluna, &des_linha);
 
-    // calcula o índice da matriz com relação a linha e coluna
-    coordenada (linha, coluna, &i, &j);
+        // calcula o índice da matriz com relação a linha e coluna
+        coordenada (linha, coluna, &i, &j);
 
-    // imprime na tela o tabuleiro e as peças do jogo
-    interface (tabuleiro);
+        // imprime na tela o tabuleiro e as peças do jogo
+        interface (tabuleiro);
+    }
+    
     return 0;
 }

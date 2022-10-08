@@ -16,9 +16,13 @@
 struct Soldado {
     char nome[10];
     int cor;
+    int capturada;
     int linha;
     int coluna;
 };
+
+// menu do jogo
+void menu (int entrada);
 
 // função responsável por inicializar o tabuleiro de xadrez
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
