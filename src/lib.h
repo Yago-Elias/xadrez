@@ -12,6 +12,11 @@
 #define P_CAVALO "\u265e"
 #define P_P "\u265f"
 
+enum id_peca {
+    peao_d_1, peao_d_2, peao_d_3, peao_d_4, peao_r_1, peao_r_2, peao_r_3, peao_r_4,
+    torre_d, torre_r, cavalo_d, cavalo_r, bispo_d, bispo_r, rainha, rei
+};
+
 // Estrutura para definir uma peça de xadrez
 struct Soldado {
     char nome[10];

@@ -26,7 +26,7 @@ int main() {
     peca receberá uma letra que representa cada peça, coluna equivale a letra que representa
     cada coluna do tabuleiro de xadrez, e des_coluna á a coluna de destino da peça
     */
-    char peca, coluna, des_coluna;
+    char coluna, des_coluna;
 
     while (executa)
     {
@@ -48,20 +48,13 @@ int main() {
             // lances do jogador
             fim_partida = 0;
             printf("\nLANCE: ");
-            scanf(" %c%c%d%c%d", &peca, &coluna, &linha, &des_coluna, &des_linha);
+            scanf(" %c%d%c%d", &coluna, &linha, &des_coluna, &des_linha);
 
             // calcula o índice da matriz com relação a linha e coluna
             coordenada (des_linha, des_coluna, &i, &j);
 
             // mudar a posição das peças conforme as jogadas
             mover_peca (tabuleiro, linha, coluna, i, j);
-
-            // condição apenas para teste de jogo, ou seja, o jogo não depende dessa condição
-            if (peca == 'h')
-            {
-                system ("clear");
-                fim_partida = 1;
-            }
         }
         else if (opc_menu == 2)
         {
