@@ -22,7 +22,10 @@ struct Soldado {
 };
 
 // menu do jogo
-void menu (int entrada);
+int menu (int *executa);
+
+// configurações relacionadas a interface do jogo
+void configurar (int cor_tabuleiro[], int *cor_fundo);
 
 // função responsável por inicializar o tabuleiro de xadrez
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
@@ -34,7 +37,7 @@ a posição ou ao movimento da peça de xadrez
 void coordenada (int linha, char coluna, int *i, int *j);
 
 // funçao que movimenta as peças no tabuleiro
-void mover_peca (struct Soldado *tabuleiro[8][8], struct Soldado peca[], int i, int j);
+void mover_peca (struct Soldado *tabuleiro[8][8], int ori_i, char ori_j, int i, int j);
 
 // mostra o tabuleiro de xadrez
-void interface (struct Soldado *tabuleiro[8][8]);
+void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
