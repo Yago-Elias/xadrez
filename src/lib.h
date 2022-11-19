@@ -19,11 +19,9 @@ enum id_peca {
 
 // Estrutura para definir uma peça de xadrez
 struct Soldado {
-    char nome[10];
-    int cor;
-    int capturada;
-    int linha;
-    int coluna;
+    int cor, nome, capturada;
+    //int linha;
+    //int coluna;
 };
 
 // menu do jogo
