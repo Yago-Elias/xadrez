@@ -82,90 +82,41 @@ são inicializados
 */
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[])
 {
-    int i, j, cor = 0;
-    
-    // preenche o nome das peças
-    strcpy (pb[0].nome, "torre_d");
-    strcpy (pb[1].nome, "cavalo_d");
-    strcpy (pb[2].nome, "bispo_d");
-    strcpy (pb[3].nome, "rainha");
-    strcpy (pb[4].nome, "rei");
-    strcpy (pb[5].nome, "bispo_r");
-    strcpy (pb[6].nome, "cavalo_r");
-    strcpy (pb[7].nome, "torre_r");
-    
-    strcpy (pb[8].nome, "p_d");
-    strcpy (pb[9].nome, "p_d");
-    strcpy (pb[10].nome, "p_d");
-    strcpy (pb[11].nome, "p_d");
-    strcpy (pb[12].nome, "p_r");
-    strcpy (pb[13].nome, "p_r");
-    strcpy (pb[14].nome, "p_r");
-    strcpy (pb[15].nome, "p_r");
+    int peca, cor = 0;
 
-    strcpy (pp[0].nome, "p_torre_d");
-    strcpy (pp[1].nome, "p_cavalo_d");
-    strcpy (pp[2].nome, "p_bispo_d");
-    strcpy (pp[3].nome, "p_rainha");
-    strcpy (pp[4].nome, "p_rei");
-    strcpy (pp[5].nome, "p_bispo_r");
-    strcpy (pp[6].nome, "p_cavalo_r");
-    strcpy (pp[7].nome, "p_torre_r");
-    
-    strcpy (pp[8].nome, "p_p_d");
-    strcpy (pp[9].nome, "p_p_d");
-    strcpy (pp[10].nome, "p_p_d");
-    strcpy (pp[11].nome, "p_p_d");
-    strcpy (pp[12].nome, "p_p_d");
-    strcpy (pp[13].nome, "p_p_d");
-    strcpy (pp[14].nome, "p_p_d");
-    strcpy (pp[15].nome, "p_p_d");
-
-    // define o tipo de cor e as posições iniciais das peças
-    for (i = 0; i < 16; ++i)
+    for (peca = 0; peca < 16; peca++)
     {
-        pp[i].cor = cor;
-        pp[i].capturada = 0;
-        pb[i].cor = cor;
-        pb[i].capturada = 0;
+        pb[peca].nome = peca + 1;
+        pp[peca].nome = peca + 1;
+
+        // define a cor e o estado da peça no jogo
+        pp[peca].cor = 1;
+        pp[peca].capturada = 0;
+        pb[peca].cor = 0;
+        pb[peca].capturada = 0;
 
         if (cor)
             cor = 0;
         else
             cor = 1;
-
-        if (i < 8)
-        {
-            pp[i].linha = 0;
-            pp[i].coluna = i;
-            pb[i].linha = 0;
-            pb[i].coluna = i;
-        }
-        else
-        {
-            pp[i].linha = 1;
-            pp[i].coluna = i;
-            pb[i].linha = 1;
-            pb[i].coluna = i;
-        }
     }
 
     /*
     passa por referência as peças dos vetores para a matriz(tabuleiro) 8x8, definindo
     as posições iniciais das peças
     */
-    for (i = 0; i < 8; ++i)
+    for (peca = 0; peca < 8; ++peca)
     {
-        tabuleiro[0][i] = &pp[i];
-        tabuleiro[1][i] = &pp[i+8];
-        tabuleiro[6][i] = &pb[i+8];
-        tabuleiro[7][i] = &pb[i];
+        tabuleiro[0][peca] = &pp[peca+8];
+        tabuleiro[1][peca] = &pp[peca];
+        tabuleiro[6][peca] = &pb[peca];
+        tabuleiro[7][peca] = &pb[peca+8];
     }
 }
 
 void mover_peca (struct Soldado *tabuleiro[8][8], int ori_i, char ori_j, int des_i, int des_j)
 {
-    int cor_peca;
+    int peca, cor_peca;
     int linha, coluna;
 
     // converte as coordenadas de entrada do usuário em índices para identificar as peças na matriz
@@ -175,12 +126,13 @@ void mover_peca (struct Soldado *tabuleiro[8][8], int ori_i, char ori_j, int des
     sleep (2);
 
     cor_peca = tabuleiro[linha][coluna]->cor;
+    peca = tabuleiro[linha][coluna]->nome;
 
     /* ========================== MOVIMENTO DAS PEÇAS PRETAS ========================== */
     if (cor_peca == 1)
     {
         // movimento do peão a frente
-        if (tabuleiro[linha][coluna]->nome[0] == 'p' tabuleiro[des_i][des_j] == NULL)
+        if ((peca > 0 && peca < 9) && tabuleiro[des_i][des_j] == NULL)
         {
             printf ("---> DEU CERTO <---\n");
             sleep (2);
@@ -284,7 +236,7 @@ void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_bo
     printf ("\n\033[%dm                             \033[m\n", cor_borda);
     for (i = 0; i < 8; ++i)
     {
-        // impreme a letra correspondente a coluna no tabuleiro e a cor da borda esquerdo
+        // imprime o número da linha no tabuleiro e a cor da borda esquerdo
         printf ("\033[%dm %d \033[m", cor_borda, num_linha);
 
         // soma com o índice para ir para a próxima letra começando a partir de 'a'
@@ -301,63 +253,69 @@ void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_bo
             */
             if (tabuleiro[i][j] != NULL)
             {
-                // imprime a cor de fundo de acordo com a cor definida na inicialização
+                // imprime a peça de acordo com a cor definida na inicialização
                 if (tabuleiro[i][j]->cor == 0)
                 {
-                    // verifica qual peça está armazenada e imprime de acordo com a mesma
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "torre_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
-                    if (!strcmp (tabuleiro[i][j]->nome, "bispo_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_BISPO);
-                    if (!strcmp (tabuleiro[i][j]->nome, "rei"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_REI);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "cavalo_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_CAVALO);
 
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_p_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_torre_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_TORRE);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_bispo_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_BISPO);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_rei"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_REI);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_p_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_cavalo_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_CAVALO);
+                    switch (tabuleiro[i][j]->nome)
+                        {
+                        // peças brancas
+                        case peao_d_1:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
+                            break;
+                        case peao_d_3:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
+                            break;
+                        case peao_r_1:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
+                            break;
+                        case peao_r_3:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
+                            break;
+                        case torre_d:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
+                            break;
+                        case bispo_d:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_BISPO);
+                            break;
+                        case rei:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_REI);
+                            break;
+                        case cavalo_r:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
+                            break;
+                    }
                 }
                 else
                 {
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "cavalo_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_CAVALO);
-                    if (!strcmp (tabuleiro[i][j]->nome, "rainha"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_RAINHA);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "bispo_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_BISPO);
-                    if (!strcmp (tabuleiro[i][j]->nome, "torre_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
-
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_p_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_cavalo_d"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_CAVALO);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_rainha"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_RAINHA);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_p_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_bispo_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_BISPO);
-                    if (!strcmp (tabuleiro[i][j]->nome, "p_torre_r"))
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_TORRE);
+                    //----------------------------  peças pretas  ----------------------------
+                    switch (tabuleiro[i][j]->nome)
+                    {
+                        case peao_d_2:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
+                            break;
+                        case peao_d_4:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
+                            break;
+                        case peao_r_2:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
+                            break;
+                        case peao_r_4:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
+                            break;
+                        case cavalo_d:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_CAVALO);
+                            break;
+                        case rainha:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_RAINHA);
+                            break;
+                        case bispo_r:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_BISPO);
+                            break;
+                        case torre_r:
+                            printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_TORRE);
+                            break;
+                    }
                 }
             }
             else
