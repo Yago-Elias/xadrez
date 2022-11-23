@@ -13,16 +13,22 @@
 #define P_P "\u265f"
 
 enum id_peca {
-    peao_d_1, peao_d_2, peao_d_3, peao_d_4, peao_r_1, peao_r_2, peao_r_3, peao_r_4,
-    torre_d, torre_r, cavalo_d, cavalo_r, bispo_d, bispo_r, rainha, rei
+    peao_d_1=1, peao_d_2, peao_d_3, peao_d_4, peao_r_1, peao_r_2, peao_r_3, peao_r_4,
+    torre_d, cavalo_d, bispo_d, rainha, rei, bispo_r, cavalo_r, torre_r
 };
 
 // Estrutura para definir uma peça de xadrez
-struct Soldado {
-    int cor, nome, capturada;
-    //int linha;
-    //int coluna;
-};
+typedef struct Soldado {
+    int peca_nome, peca_cor;
+} soldado;
+
+typedef struct Coordenada
+{
+    int linha_origem;
+    char coluna_origem;
+    int linha_destino, coluna_destino;
+} coordenada_peca;
+
 
 // menu do jogo
 int menu (int *executa);
@@ -31,16 +37,16 @@ int menu (int *executa);
 void configurar (int cor_tabuleiro[], int *cor_fundo);
 
 // função responsável por inicializar o tabuleiro de xadrez
-void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
+void inicializar (soldado *tabuleiro[8][8], soldado pb[], soldado pp[]);
 
 /*
 com base na entrada do usuário a função retorna a "linha" e "coluna" da matriz, correspondente 
 a posição ou ao movimento da peça de xadrez
 */
-void coordenada (int linha, char coluna, int *i, int *j);
+void coordenada (coordenada_peca coord);
 
 // funçao que movimenta as peças no tabuleiro
-void mover_peca (struct Soldado *tabuleiro[8][8], int ori_i, char ori_j, int i, int j);
+void mover_peca (soldado *tabuleiro[8][8], coordenada_peca coord);
 
 // mostra o tabuleiro de xadrez
-void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
+void interface (soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
