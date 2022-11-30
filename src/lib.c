@@ -1,10 +1,17 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "lib.h"
 
-int menu (int *executa)
+int run=TRUE, end_game=FALSE;
+int linha_origem_ent, linha_destino_ent, linha_destino, coluna_destino;
+int cor_tabuleiro[] = {104, 44}, cor_borda=45;
+char coluna_origem_ent, coluna_destino_ent;
+soldado *tabuleiro[8][8] = {0};
+soldado peca_b[16];
+soldado peca_p[16];
+
+int menu ()
 {
     int opc_menu;
 
@@ -20,76 +27,72 @@ int menu (int *executa)
     printf("\033[1J\033[1;1H");
 
     if (opc_menu == 1)
-        return 1;
+        return JOGAR;
     else if (opc_menu == 2)
-        return 2;
+        return CONFIG;
     else if (opc_menu == 3)
-        *executa = 0;
-    else
-        return 3;
+        run = FALSE;
 }
 
-void coordenada (coordenada_peca coord)
+void coordenada ()
 {
-    char coluna = coord.coluna_origem;
-    int linha = coord.linha_origem;
-    switch (coluna)
+    switch (coluna_origem_ent)
     {
         case 'a':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 0;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 0;
         break;
         case 'b':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 1;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 1;
         break;
         case 'c':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 2;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 2;
         break;
         case 'd':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 3;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 3;
         break;
         case 'e':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 4;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 4;
         break;
         case 'f':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 5;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 5;
         break;
         case 'g':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 6;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 6;
         break;
         case 'h':
-            coord.linha_destino = 8 - linha;
-            coord.coluna_destino = 7;
+            linha_destino = 8 - linha_origem_ent;
+            coluna_destino = 7;
         break;
         default:
             printf("valor inválido\n"); // return ERRO_COLUNA_INVALIDA
     }
 }
 
-void inicializar (soldado *tabuleiro[8][8], soldado pb[], soldado pp[])
+void inicializar ()
 {
     int peca;
 
     for (peca = 0; peca < 16; peca++)
     {
-        pb[peca].peca_nome = peca + 1;
-        pp[peca].peca_nome = peca + 1;
+        peca_b[peca].peca_nome = peca + 1;
+        peca_p[peca].peca_nome = peca + 1;
 
-        pb[peca].peca_cor = 0;
-        pp[peca].peca_cor = 1;
+        peca_b[peca].peca_cor = 0;
+        peca_p[peca].peca_cor = 1;
 
         if (peca < 8)
         {
-            tabuleiro[0][peca] = &pp[peca+8];
-            tabuleiro[1][peca] = &pp[peca];
-            tabuleiro[6][peca] = &pb[peca];
-            tabuleiro[7][peca] = &pb[peca+8];
+            tabuleiro[0][peca] = &peca_p[peca+8];
+            tabuleiro[1][peca] = &peca_p[peca];
+            tabuleiro[6][peca] = &peca_b[peca];
+            tabuleiro[7][peca] = &peca_b[peca+8];
         }
     }
 }
@@ -160,17 +163,17 @@ int move_diagonal(soldado *tabuleiro[8][8], int ori_i, char ori_j, int des_i, in
 
 }
 */
-void mover_peca (soldado *tabuleiro[8][8], coordenada_peca coord)
+void mover_peca ()
 {
     int peca, cor_peca, linha, coluna;
     int limite_des, d_linha, d_coluna, casa_livre;
 
-    coordenada (coord);
-    limite_des = coord.linha_destino >= 0 && coord.coluna_destino >= 0;
-    linha = coord.linha_origem;
-    coluna = coord.coluna_origem;
-    d_linha = coord.linha_destino;
-    d_coluna = coord.coluna_destino;
+    coordenada ();
+    limite_des = linha_destino >= 0 && coluna_destino >= 0;
+    linha = linha_origem_ent;
+    coluna = coluna_origem_ent;
+    d_linha = linha_destino;
+    d_coluna = coluna_destino;
 
     printf ("origem  [%d, %d]\ndestino [%d, %d]\nlimite %d\n", linha, coluna, d_linha, d_coluna, limite_des);
 
@@ -225,7 +228,7 @@ void mover_peca (soldado *tabuleiro[8][8], coordenada_peca coord)
     }
 }
 
-int inverte_cor (int i, int j, int cor_tabuleiro[])
+int inverte_cor (int i, int j)
 {
     if ((i + j) % 2 == 0)
         // cor mais clara, exemplo (44 + 60)
@@ -235,7 +238,7 @@ int inverte_cor (int i, int j, int cor_tabuleiro[])
         return cor_tabuleiro[1];
 }
 
-void configurar (int cor_tabuleiro[], int *cor_borda)
+void configurar ()
 {
     int tema;
 
@@ -255,25 +258,25 @@ void configurar (int cor_tabuleiro[], int *cor_borda)
     case 1:
         cor_tabuleiro[0]  = 107;
         cor_tabuleiro[1] = 47;
-        *cor_borda = 40;
+        cor_borda = 40;
         printf ("Tema 1 selecionado.\n");
         break;
     case 2:
         cor_tabuleiro[0] = 103;
         cor_tabuleiro[1] = 43;
-        *cor_borda = 46;
+        cor_borda = 46;
         printf ("Tema 2 selecionado.\n");
         break;
     case 3:
         cor_tabuleiro[0] = 104;
         cor_tabuleiro[1] = 44;
-        *cor_borda = 45;
+        cor_borda = 45;
         printf ("Tema 3 selecionado.\n");
         break;
     case 4:
         cor_tabuleiro[0] = 106;
         cor_tabuleiro[1] = 46;
-        *cor_borda = 44;
+        cor_borda = 44;
         printf ("Tema 4 selecionado.\n");
         break;
     }
@@ -281,7 +284,7 @@ void configurar (int cor_tabuleiro[], int *cor_borda)
     system ("clear");
 }
 
-void interface (soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda)
+void interface ()
 {
     int i, j, num_linha=8, cor_tabuleiro_atual;
 
@@ -296,7 +299,7 @@ void interface (soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda)
 
         for (j = 0; j < 8; ++j)
         {
-            cor_tabuleiro_atual = inverte_cor (i, j, cor_tabuleiro);
+            cor_tabuleiro_atual = inverte_cor (i, j);
             //printf ("%d", cor_tabuleiro);
 
             if (tabuleiro[i][j] != NULL)
@@ -419,4 +422,40 @@ void interface (soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda)
         printf("\033[%dm  \033[m\n", cor_borda);
     }
     printf ("\033[%dm    a  b  c  d  e  f  g  h   \033[m\n", cor_borda);
+}
+
+void execute()
+{
+    int opc_menu;
+
+    while (run)
+    {
+        if (end_game)
+        {
+            opc_menu = menu();
+            inicializar();
+        }
+        
+        if (opc_menu == 1)
+        {
+            interface();
+            end_game = FALSE;
+            printf("\nLANCE: ");
+            scanf(" %c%d%c%d", 
+            &coluna_origem_ent, &linha_origem_ent, &coluna_destino_ent, &linha_destino_ent);
+            coordenada();
+            mover_peca();
+        }
+        else if (opc_menu == 2)
+        {
+            configurar();
+            end_game = TRUE;
+        }
+        else if (opc_menu == 3)
+        {
+            printf("SAINDO DO JOGO");
+            sleep(2);
+            exit(0);
+        }
+    }
 }

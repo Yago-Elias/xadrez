@@ -1,4 +1,6 @@
 // Definindo constantes para cada peça de xadrez com base na tabela Unicode
+#define TRUE 1
+#define FALSE 0
 #define B_REI "\u2654"
 #define B_RAINHA "\u2655"
 #define B_TORRE "\u2656"
@@ -17,36 +19,33 @@ enum id_peca {
     torre_d, cavalo_d, bispo_d, rainha, rei, bispo_r, cavalo_r, torre_r
 };
 
+enum Config {CONFIG, MENU, JOGAR};
+
 // Estrutura para definir uma peça de xadrez
 typedef struct Soldado {
     int peca_nome, peca_cor;
 } soldado;
 
-typedef struct Coordenada
-{
-    int linha_origem;
-    char coluna_origem;
-    int linha_destino, coluna_destino;
-} coordenada_peca;
-
-
 // menu do jogo
-int menu (int *executa);
+int menu ();
 
 // configurações relacionadas a interface do jogo
-void configurar (int cor_tabuleiro[], int *cor_fundo);
+void configurar ();
 
 // função responsável por inicializar o tabuleiro de xadrez
-void inicializar (soldado *tabuleiro[8][8], soldado pb[], soldado pp[]);
+void inicializar ();
 
 /*
 com base na entrada do usuário a função retorna a "linha" e "coluna" da matriz, correspondente 
 a posição ou ao movimento da peça de xadrez
 */
-void coordenada (coordenada_peca coord);
+void coordenada ();
 
 // funçao que movimenta as peças no tabuleiro
-void mover_peca (soldado *tabuleiro[8][8], coordenada_peca coord);
+void mover_peca ();
 
 // mostra o tabuleiro de xadrez
-void interface (soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
+void interface ();
+
+// inicia o jogo
+void execute();
