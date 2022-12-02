@@ -13,13 +13,13 @@
 #define P_P "\u265f"
 
 // Estrutura para definir uma peça de xadrez
-struct Soldado {
+typedef struct Soldado {
     char nome[10];
     int cor;
     int capturada;
     int linha;
     int coluna;
-};
+} soldado;
 
 // menu do jogo
 int menu (int *executa);
@@ -28,16 +28,16 @@ int menu (int *executa);
 void configurar (int cor_tabuleiro[], int *cor_fundo);
 
 // função responsável por inicializar o tabuleiro de xadrez
-void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
+void inicializar (soldado *tabuleiro[8][8], soldado pb[], soldado pp[]);
 
 /*
 com base na entrada do usuário a função retorna a "linha" e "coluna" da matriz, correspondente 
 a posição ou ao movimento da peça de xadrez
 */
-void coordenada (int linha, char coluna, int *i, int *j);
+void coordenada (int linha, char coluna, int *linha_dest, int *coluna_dest);
 
 // funçao que movimenta as peças no tabuleiro
-void mover_peca (struct Soldado *tabuleiro[8][8], int ori_i, char ori_j, int i, int j);
+void mover_peca (soldado *tabuleiro[8][8], int ori_i, char ori_j, int i, int j);
 
 // mostra o tabuleiro de xadrez
-void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
+void interface (soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
