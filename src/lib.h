@@ -1,4 +1,10 @@
-// Definindo constantes para cada peça de xadrez com base na tabela Unicode
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define True 1
+#define False 0
 #define B_REI "\u2654"
 #define B_RAINHA "\u2655"
 #define B_TORRE "\u2656"
@@ -13,24 +19,27 @@
 #define P_P "\u265f"
 
 enum id_peca {
-    peao_d_1, peao_d_2, peao_d_3, peao_d_4, peao_r_1, peao_r_2, peao_r_3, peao_r_4,
-    torre_d, torre_r, cavalo_d, cavalo_r, bispo_d, bispo_r, rainha, rei
+    peao_d_1=1, peao_d_2, peao_d_3, peao_d_4, peao_r_1, peao_r_2, peao_r_3, peao_r_4,
+    torre_d, cavalo_d, bispo_d, rainha, rei, bispo_r, cavalo_r, torre_r, branca, preta
 };
 
-// Estrutura para definir uma peça de xadrez
+enum id_jogo {JOGAR=1, CONFIG, SAIR};
+
+typedef struct Coordenada
+{
+    int origem_linha, origem_coluna;
+    int destino_linha, destino_coluna;
+} coord;
+
 struct Soldado {
-    char nome[10];
-    int cor;
-    int capturada;
-    int linha;
-    int coluna;
+    int nome, cor, capturada, pular_2_casas;
 };
 
 // menu do jogo
-int menu (int *executa);
+int menu ();
 
 // configurações relacionadas a interface do jogo
-void configurar (int cor_tabuleiro[], int *cor_fundo);
+void configurar (int cor_tabuleiro[]);
 
 // função responsável por inicializar o tabuleiro de xadrez
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
@@ -39,10 +48,14 @@ void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct S
 com base na entrada do usuário a função retorna a "linha" e "coluna" da matriz, correspondente 
 a posição ou ao movimento da peça de xadrez
 */
-void coordenada (int linha, char coluna, int *i, int *j);
+void coordenada (int linha, char coluna, int *destino_linha, int *destino_coluna);
 
 // funçao que movimenta as peças no tabuleiro
-void mover_peca (struct Soldado *tabuleiro[8][8], int ori_i, char ori_j, int i, int j);
+void mover_peca (struct Soldado *tabuleiro[8][8], coord crd);
 
 // mostra o tabuleiro de xadrez
-void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[], int cor_borda);
+void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[]);
+
+void frente(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc);
+
+void peao(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc);
