@@ -1,7 +1,7 @@
 # XADREZ
 ### O clássico jogo de xadrez em C
 ***
-Esse jogo é executado no terminal, com isso é importante ressaltar que é preciso usar um terminal que suporte os caracteres da tabela Unicode. Recomendamos usar o terminal da Microsoft, o Windows Terminal, já que o mesmo foi usado nesse projeto.
+Esse jogo é executado no terminal, com isso é importante ressaltar que é preciso usar um terminal que suporte os caracteres da tabela Unicode.
 ***
 Etapas de desenvolvimento:
 
