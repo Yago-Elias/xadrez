@@ -47,7 +47,9 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
         if (peca <= 7)
         {
             pb[peca].pular_2_casas = True;
+            pb[peca].mover = peao;
             pp[peca].pular_2_casas = True;
+            pp[peca].mover = peao;
         }
         else
         {
@@ -252,12 +254,30 @@ void frente(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc)
     }
 }
 
-void peao(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc)
+int atributo(struct Soldado *peca, enum id_atributo atributo)
 {
-    if (tabuleiro[ol][oc] != NULL && tabuleiro[dl][dc] == NULL)
+    if (peca != NULL)
+        if (atributo == NOME) return peca->nome;
+        else if (atributo == COR) return peca->cor;
+        else if (atributo == CAPTURADA) return peca->capturada;
+        else if (atributo == PULAR_2_CASAS) return peca->pular_2_casas;
+    else return 50;
+}
+
+void peao(struct Soldado *tabuleiro[8][8], coord crd)
+{
+    int ol, oc, dl, dc;
+    ol = crd.origem_linha;
+    oc = crd.origem_coluna;
+    dl = crd.destino_linha;
+    dc = crd.destino_coluna;
+
+    if (tabuleiro[ol][oc] != NULL)
+    {
+        if (oc == dc && tabuleiro[dl][dc] == NULL)
         {
-            printf("\033[4;35HEM FRENTE\033[1H");
-            sleep(1);
+            // printf("\033[2;35HEM FRENTE\033[8H");
+            // sleep(1);
             if (ol - dl == 1)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
@@ -273,6 +293,25 @@ void peao(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc)
                 tabuleiro[ol][oc] = NULL;
             }
         }
+        else if (atributo(tabuleiro[dl][dc], COR) == preta)
+        {
+            if (ol > dl && oc < dc)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+            else if (ol > dl && oc > dc)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+        }
+    }
+}
+
+void torre(struct Soldado *tabuleiro[8][8], coord crd)
+{
+    
 }
 
 void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
@@ -283,10 +322,10 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
     oc = crd.origem_coluna;
     dl = crd.destino_linha;
     dc = crd.destino_coluna;
-    peca = tabuleiro[ol][oc]->nome;
+    peca = atributo(tabuleiro[ol][oc], NOME);
 
-    if (peca > 0 && peca < 9)
-        peao(tabuleiro, ol, oc, dl, dc);
+    if (peca >= peao_d_1 && peca <= peao_r_4)
+        tabuleiro[ol][oc]->mover(tabuleiro, crd);
     // else if (peca == torre_d || peca == torre_r)
     // else if (peca == cavalo_d || peca == cavalo_r)
     // else if (peca == bispo_d || peca == bispo_r)
