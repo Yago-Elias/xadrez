@@ -265,15 +265,6 @@ void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
     printf ("\033[%dm    a  b  c  d  e  f  g  h   \033[m\n", cor_borda);
 }
 
-void frente(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc)
-{
-    if (oc == dc && ol > dl)
-    {
-        tabuleiro[dl][dc] = tabuleiro[ol][oc];
-        tabuleiro[ol][oc] = NULL;
-    }
-}
-
 int atributo(struct Soldado *peca, enum id_atributo atributo)
 {
     if (peca != NULL)
@@ -435,8 +426,7 @@ void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
     if (tabuleiro[ol][oc] != NULL)
     {
         printf("\033[2;35HCAVALO\033[1H");
-        int auxl, auxc, baixo;
-        int adversario, mover;
+        int auxl, auxc, adversario, mover;
 
         adversario = atributo(tabuleiro[dl][dc], COR);
         auxl = ol - dl;
