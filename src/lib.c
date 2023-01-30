@@ -61,11 +61,11 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
             pb[peca].mover = torre;
             pp[peca].mover = torre;
         }
-        // else if ((peca + 1) == CAVALO_D || (peca + 1) == CAVALO_R)
-        // {
-        //     pb[peca].mover = cavalo;
-        //     pp[peca].mover = cavalo;
-        // }
+        else if ((peca + 1) == CAVALO_D || (peca + 1) == CAVALO_R)
+        {
+            pb[peca].mover = cavalo;
+            pp[peca].mover = cavalo;
+        }
         // else if ((peca + 1) == BISPO_D || (peca + 1) == BISPO_R)
         // {
         //     pb[peca].mover = bispo;
@@ -416,6 +416,79 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 }
             }
             if (livre || (auxc == dc && adversario == PRETA))
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+        }
+    }
+}
+
+void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
+{
+    int ol, oc, dl, dc;
+    ol = crd.origem_linha;
+    oc = crd.origem_coluna;
+    dl = crd.destino_linha;
+    dc = crd.destino_coluna;
+
+    if (tabuleiro[ol][oc] != NULL)
+    {
+        printf("\033[2;35HCAVALO\033[1H");
+        int auxl, auxc, baixo;
+        int adversario, mover;
+
+        adversario = atributo(tabuleiro[dl][dc], COR);
+        auxl = ol - dl;
+        auxc = oc - dc;
+        mover = tabuleiro[dl][dc] == NULL || adversario == PRETA;
+        if (auxl == 2)
+        {
+            if (auxc == 1 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+            else if (auxc == -1 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+        }
+        else if (auxl == 1)
+        {
+            if (auxc == 2 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+            else if (auxc == -2 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+        }
+        else if (auxl == -2)
+        {
+            if (auxc == 1 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+            else if (auxc == -1 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+        }
+        else if (auxl == -1)
+        {
+            if (auxc == 2 && mover)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+            else if (auxc == -2 && mover)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;

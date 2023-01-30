@@ -62,3 +62,5 @@ void frente(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc);
 void peao(struct Soldado *tabuleiro[8][8], coord crd);
 
 void torre(struct Soldado *tabuleiro[8][8], coord crd);
+
+void cavalo(struct Soldado *tabuleiro[8][8], coord crd);
