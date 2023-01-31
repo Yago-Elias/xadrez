@@ -44,38 +44,6 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
         pp[peca].nome = peca + 1;
         pp[peca].cor = PRETA;
         pp[peca].capturada = False;
-        if (peca <= 7)
-        {
-            pb[peca].mover = peao;
-            pp[peca].mover = peao;
-        }
-        else
-        
-        if ((peca + 1) == TORRE_D || (peca + 1) == TORRE_R)
-        {
-            pb[peca].mover = torre;
-            pp[peca].mover = torre;
-        }
-        else if ((peca + 1) == CAVALO_D || (peca + 1) == CAVALO_R)
-        {
-            pb[peca].mover = cavalo;
-            pp[peca].mover = cavalo;
-        }
-        else if ((peca + 1) == BISPO_D || (peca + 1) == BISPO_R)
-        {
-            pb[peca].mover = bispo;
-            pp[peca].mover = bispo;
-        }
-        // else if ((peca + 1) == RAINHA)
-        // {
-        //     pb[peca].mover = rainha;
-        //     pp[peca].mover = rainha;
-        // }
-        // else if ((peca + 1) == REI)
-        // {
-        //     pb[peca].mover = rei;
-        //     pp[peca].mover = rei;
-        // }
     }
 
     for (peca = 0; peca < 8; ++peca)
@@ -645,26 +613,30 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
+void rainha(struct Soldado *tabuleiro[8][8], coord crd)
+{}
+
+void rei(struct Soldado *tabuleiro[8][8], coord crd)
+{}
+
 void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
 {
-    int peca, ol, oc, dl, dc;
+    int peca, ol, oc;
 
     ol = crd.origem_linha;
     oc = crd.origem_coluna;
-    dl = crd.destino_linha;
-    dc = crd.destino_coluna;
     peca = atributo(tabuleiro[ol][oc], NOME);
 
     if (peca >= PEAO_D_1 && peca <= PEAO_R_4)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        peao(tabuleiro, crd);
     else if (peca == TORRE_D || peca == TORRE_R)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        torre(tabuleiro, crd);
     else if (peca == CAVALO_D || peca == CAVALO_R)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        cavalo(tabuleiro, crd);
     else if (peca == BISPO_D || peca == BISPO_R)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        bispo(tabuleiro, crd);
     else if (peca == RAINHA)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        rainha(tabuleiro, crd);
     else if (peca == REI)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        rei(tabuleiro, crd);
 }
