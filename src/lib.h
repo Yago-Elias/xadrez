@@ -32,7 +32,7 @@ typedef struct Coordenada
 } coord;
 
 struct Soldado {
-    int nome, cor, capturada, pular_2_casas;
+    int nome, cor, capturada;
     void (*mover)(struct Soldado *tabuleiro[8][8], coord crd);
 };
 
@@ -62,3 +62,9 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd);
 void torre(struct Soldado *tabuleiro[8][8], coord crd);
 
 void cavalo(struct Soldado *tabuleiro[8][8], coord crd);
+
+void bispo(struct Soldado *tabuleiro[8][8], coord crd);
+
+// void rainha(struct Soldado *tabuleiro[8][8], coord crd);
+
+// void rei(struct Soldado *tabuleiro[8][8], coord crd);
