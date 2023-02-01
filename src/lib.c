@@ -421,12 +421,12 @@ void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
     dl = crd.destino_linha;
     dc = crd.destino_coluna;
 
-    int cor_adversario = (atributo(tabuleiro[ol][oc], COR) == PRETA) ? BRANCA : PRETA;
-
     if (tabuleiro[ol][oc] != NULL)
     {
         printf("\033[2;35HCAVALO\033[1H");
-        int auxl, auxc, peca, adversario, mover;
+        int auxl, auxc, peca, mover;
+        int adversario = atributo(tabuleiro[dl][dc], COR);
+        int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
 
         auxl = ol - dl;
         auxc = oc - dc;
@@ -461,27 +461,21 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
     if (tabuleiro[ol][oc] != NULL)
     {
         printf("\033[2;35HBISPO\033[1H");
-        int cima_direita, cima_esquerda, baixo_direita, baixo_esquerda;
-        int auxl=ol, auxc=oc, peca, adversario, livre=True, mover;
+        int nordeste, sudeste, sudoeste, noroeste;
+        int auxl=ol, auxc=oc, adversario, cor_adversario, livre=True, capturar;
         
-        cima_direita = ol > dl && oc < dc;
-        cima_esquerda = ol > dl && oc > dc;
-        baixo_direita = ol < dl && oc < dc;
-        baixo_esquerda = ol < dl && oc > dc;
-        peca = atributo(tabuleiro[ol][oc], COR);
+        nordeste = ol > dl && oc < dc;
+        sudeste = ol < dl && oc < dc;
+        sudoeste = ol < dc && oc > dc;
+        noroeste = ol > dl && oc > dc;
         adversario = atributo(tabuleiro[dl][dc], COR);
+        cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
 
-        if (peca == BRANCA && adversario == PRETA)
-            adversario = True;
-        else if (peca == PRETA && adversario == BRANCA)
-            adversario = True;
-        else adversario = False;
-
-        if (cima_direita)
+        if (nordeste)
         {
             while (auxl > dl && auxc < dc)
             {
-                printf("\033[%d;35HDIAGONAL DIREITA[%d, %d]\033[1H", auxl, auxl, auxc);
+                printf("\033[%d;35HSENTIDO NORDESTE[%d, %d]\033[1H", auxl, auxl, auxc);
                 auxl--;
                 auxc++;
                 if (tabuleiro[auxl][auxc] != NULL)
@@ -490,38 +484,18 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            mover = (auxl == dl && auxc == dc && adversario);
-            if (livre || mover)
+            capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
+            if (livre || capturar)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (cima_esquerda)
-        {
-            while (auxl > dl && auxc > dc)
-            {
-                printf("\033[%d;35HDIAGONAL ESQUERDA[%d, %d]\033[1H", auxl, auxl, auxc);
-                auxl--;
-                auxc--;
-                if (tabuleiro[auxl][auxc] != NULL)
-                {
-                    livre = False;
-                    break;
-                }
-            }
-            mover = (auxl == dl && auxc == dc && adversario);
-            if (livre || mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-        }
-        else if (baixo_direita)
+        else if (sudeste)
         {
             while (auxl < dl && auxc < dc)
             {
-                printf("\033[%d;35HDIAGONAL ESQUERDA[%d, %d]\033[1H", auxl, auxl, auxc);
+                printf("\033[%d;35HSENTIDO SUDESTE[%d, %d]\033[1H", auxl, auxl, auxc);
                 auxl++;
                 auxc++;
                 if (tabuleiro[auxl][auxc] != NULL)
@@ -530,18 +504,19 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            mover = (auxl == dl && auxc == dc && adversario);
-            if (livre || mover)
+            capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
+            if (livre || capturar)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (baixo_esquerda)
+        else if (sudoeste)
         {
+            printf("\033[3;35HSENTIDO SUDOESTE\033[1H");
             while (auxl < dl && auxc > dc)
             {
-                printf("\033[%d;35HDIAGONAL ESQUERDA[%d, %d]\033[1H", auxl, auxl, auxc);
+                printf("\033[%d;35HSENTIDO SUDOESTE[%d, %d]\033[1H", auxl, auxl, auxc);
                 auxl++;
                 auxc--;
                 if (tabuleiro[auxl][auxc] != NULL)
@@ -550,8 +525,28 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            mover = (auxl == dl && auxc == dc && adversario);
-            if (livre || mover)
+            capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
+            if (livre || capturar)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+        }
+        else if (noroeste)
+        {
+            while (auxl > dl && auxc > dc)
+            {
+                printf("\033[%d;35HSENTIDO NOROESTE[%d, %d]\033[1H", auxl, auxl, auxc);
+                auxl--;
+                auxc--;
+                if (tabuleiro[auxl][auxc] != NULL)
+                {
+                    livre = False;
+                    break;
+                }
+            }
+            capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
+            if (livre || capturar)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
@@ -580,8 +575,8 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
         torre(tabuleiro, crd);
     else if (peca == CAVALO_D || peca == CAVALO_R)
         cavalo(tabuleiro, crd);
-    // else if (peca == BISPO_D || peca == BISPO_R)
-    //     bispo(tabuleiro, crd);
+    else if (peca == BISPO_D || peca == BISPO_R)
+        bispo(tabuleiro, crd);
     // else if (peca == RAINHA)
     //     rainha(tabuleiro, crd);
     // else if (peca == REI)
