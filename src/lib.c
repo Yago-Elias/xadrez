@@ -317,28 +317,20 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
     dl = crd.destino_linha;
     dc = crd.destino_coluna;
 
-    int cor_adversario = (atributo(tabuleiro[ol][oc], COR) == PRETA) ? BRANCA : PRETA;
-
     if (tabuleiro[ol][oc] != NULL)
     {
         printf("\033[2;35HTORRE\033[1H");
-        int auxl=ol, auxc=oc, peca, adversario, livre=True;
-        int cima, baixo, esquerda, direita;
+        int auxl=ol, auxc=oc, adversario, cor_adversario, livre=True;
+        int norte, leste, sul, oeste;
 
-        cima = ol > dl && oc == dc;
-        baixo = ol < dl && oc == dc;
-        esquerda = ol == dl && oc > dc;
-        direita = ol == dl && oc < dc;
-        peca = atributo(tabuleiro[ol][oc], COR);
+        norte = ol > dl && oc == dc;
+        leste = ol == dl && oc < dc;
+        sul = ol < dl && oc == dc;
+        oeste = ol == dl && oc > dc;
         adversario = atributo(tabuleiro[dl][dc], COR);
+        cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
 
-        if (peca == BRANCA && adversario == PRETA)
-            adversario = True;
-        else if (peca == PRETA && adversario == BRANCA)
-            adversario = True;
-        else adversario = False;
-
-        if (cima)
+        if (norte)
         {
             while (auxl > dl)
             {
@@ -356,7 +348,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (baixo)
+        else if (sul)
         {
             while (auxl < dl)
             {
@@ -374,7 +366,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (esquerda)
+        else if (oeste)
         {
             while (auxc > dc)
             {
@@ -392,7 +384,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (direita)
+        else if (leste)
         {
             while (auxc < dc)
             {
