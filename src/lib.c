@@ -255,43 +255,32 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
 
     if (tabuleiro[ol][oc] != NULL)
     {
-        printf("\033[2;35HPEÂO\033[8H");
-        peca = atributo(tabuleiro[ol][oc], COR);
-        adversario = atributo(tabuleiro[dl][dc], COR);
-        aux = ol - dl;
-        move_branca = (peca == BRANCA && (aux == 1 || aux == 2));
-        move_preta = (peca == PRETA && (aux == -1 || aux == -2));
-        
-        if ((peca == BRANCA && ol == 6)
-         || (peca == PRETA && ol == 1)) pular_2_casas = True;
+        int pular_2_casas = False;
+        int adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
+        int movimento = (tabuleiro[ol][oc]->cor == BRANCA) ? ol - dl : dl - ol;
 
-        if (peca == BRANCA && adversario == PRETA)
-            adversario = True;
-        else if (peca == PRETA && adversario == BRANCA)
-            adversario = True;
-        else adversario = False;
-        
-        if (oc == dc && tabuleiro[dl][dc] == NULL)
+        if (ol == 1 || ol == 6) pular_2_casas = True;
+        int livre = (tabuleiro[ol-1][oc] == NULL && tabuleiro[ol+1][oc] == NULL);
+
+        if (oc == dc && livre && tabuleiro[dl][dc] == NULL)
         {
-            printf("\033[%d;35HFRENTE [%d, %d]\033[1H", ol, ol, oc);
-            if (move_branca || move_preta)
+            printf("\033[2;35HEM FRENTE\033[1H");
+            if (movimento == 1)
             {
-                if (pular_2_casas)
-                {
-                    tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                    tabuleiro[ol][oc] = NULL;
-                }
-                else if (aux == 1 || aux == -1)
-                {
-                    tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                    tabuleiro[ol][oc] = NULL;
-                }
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
+            }
+            else if (pular_2_casas && movimento == 2)
+            {
+                tabuleiro[dl][dc] = tabuleiro[ol][oc];
+                tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (adversario)
+        else if (atributo(tabuleiro[dl][dc], COR) == adversario)
         {
-            printf("\033[%d;35HCAPTURA [%d, %d]\033[1H", ol, ol, oc);
-            if (peca == BRANCA && aux == 1)
+            int avanco = (atributo(tabuleiro[ol][oc], COR) == BRANCA) ? ol > dl : ol < dl;
+
+            if (avanco && oc < dc)
             {
                 if (ol > dl && oc < dc)
                 {
@@ -304,7 +293,7 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
                     tabuleiro[ol][oc] = NULL;
                 }
             }
-            else if (peca == PRETA && aux == -1)
+            else if (avanco && oc > dc)
             {
                 if (ol < dl && oc < dc)
                 {
@@ -328,6 +317,8 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
     oc = crd.origem_coluna;
     dl = crd.destino_linha;
     dc = crd.destino_coluna;
+
+    int cor_adversario = (atributo(tabuleiro[ol][oc], COR) == PRETA) ? BRANCA : PRETA;
 
     if (tabuleiro[ol][oc] != NULL)
     {
@@ -360,7 +351,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            if (livre || (auxl == dl && adversario))
+            if (livre || (auxl == dl && adversario == cor_adversario))
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
@@ -378,7 +369,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            if (livre || (auxl == dl && adversario))
+            if (livre || (auxl == dl && adversario == cor_adversario))
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
@@ -396,7 +387,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            if (livre || (auxc == dc && adversario))
+            if (livre || (auxc == dc && adversario == cor_adversario))
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
@@ -414,7 +405,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                     break;
                 }
             }
-            if (livre || (auxc == dc && adversario))
+            if (livre || (auxc == dc && adversario == cor_adversario))
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
@@ -431,6 +422,8 @@ void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
     dl = crd.destino_linha;
     dc = crd.destino_coluna;
 
+    int cor_adversario = (atributo(tabuleiro[ol][oc], COR) == PRETA) ? BRANCA : PRETA;
+
     if (tabuleiro[ol][oc] != NULL)
     {
         printf("\033[2;35HCAVALO\033[1H");
@@ -438,63 +431,18 @@ void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
 
         auxl = ol - dl;
         auxc = oc - dc;
-        peca = atributo(tabuleiro[ol][oc], COR);
-        adversario = atributo(tabuleiro[dl][dc], COR);
-
-        if (peca == BRANCA && adversario == PRETA)
-            adversario = True;
-        else if (peca == PRETA && adversario == BRANCA)
-            adversario = True;
-        else adversario = False;
-
-        mover = tabuleiro[dl][dc] == NULL || adversario;
-        if (auxl == 2)
+        mover = tabuleiro[dl][dc] == NULL || adversario == cor_adversario;
+        if (auxl == 2 || auxl == -2)
         {
-            if (auxc == 1 && mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-            else if (auxc == -1 && mover)
+            if ((auxc == 1 || auxc == -1) && mover)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
             }
         }
-        else if (auxl == 1)
+        else if (auxl == 1 || auxl == -1)
         {
-            if (auxc == 2 && mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-            else if (auxc == -2 && mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-        }
-        else if (auxl == -2)
-        {
-            if (auxc == 1 && mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-            else if (auxc == -1 && mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-        }
-        else if (auxl == -1)
-        {
-            if (auxc == 2 && mover)
-            {
-                tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                tabuleiro[ol][oc] = NULL;
-            }
-            else if (auxc == -2 && mover)
+            if ((auxc == 2 || auxc == -2) && mover)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
                 tabuleiro[ol][oc] = NULL;
@@ -633,10 +581,10 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
         torre(tabuleiro, crd);
     else if (peca == CAVALO_D || peca == CAVALO_R)
         cavalo(tabuleiro, crd);
-    else if (peca == BISPO_D || peca == BISPO_R)
-        bispo(tabuleiro, crd);
-    else if (peca == RAINHA)
-        rainha(tabuleiro, crd);
-    else if (peca == REI)
-        rei(tabuleiro, crd);
+    // else if (peca == BISPO_D || peca == BISPO_R)
+    //     bispo(tabuleiro, crd);
+    // else if (peca == RAINHA)
+    //     rainha(tabuleiro, crd);
+    // else if (peca == REI)
+    //     rei(tabuleiro, crd);
 }
