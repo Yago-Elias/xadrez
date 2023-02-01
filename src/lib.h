@@ -23,7 +23,7 @@ enum id_peca {
     TORRE_D, CAVALO_D, BISPO_D, RAINHA, REI, BISPO_R, CAVALO_R, TORRE_R
 };
 enum id_jogo {JOGAR=1, CONFIG, SAIR, BRANCA, PRETA};
-enum id_atributo {NOME, COR, CAPTURADA, PULAR_2_CASAS};
+enum id_atributo {NOME, COR, CAPTURADA};
 
 typedef struct Coordenada
 {
@@ -32,8 +32,7 @@ typedef struct Coordenada
 } coord;
 
 struct Soldado {
-    int nome, cor, capturada, pular_2_casas;
-    void (*mover)(struct Soldado *tabuleiro[8][8], coord crd);
+    int nome, cor, capturada;
 };
 
 // menu do jogo

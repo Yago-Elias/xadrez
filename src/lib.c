@@ -44,38 +44,6 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
         pp[peca].nome = peca + 1;
         pp[peca].cor = PRETA;
         pp[peca].capturada = False;
-        if (peca <= 7)
-        {
-            pb[peca].pular_2_casas = True;
-            pb[peca].mover = peao;
-            pp[peca].pular_2_casas = True;
-            pp[peca].mover = peao;
-        }
-        else
-        {
-            pb[peca].pular_2_casas = False;
-            pp[peca].pular_2_casas = False;
-        }
-        if ((peca + 1) == TORRE_D || (peca + 1) == TORRE_R)
-        {
-            pb[peca].mover = torre;
-            pp[peca].mover = torre;
-        }
-        else if ((peca + 1) == CAVALO_D || (peca + 1) == CAVALO_R)
-        {
-            pb[peca].mover = cavalo;
-            pp[peca].mover = cavalo;
-        }
-        // else if ((peca + 1) == BISPO_D || (peca + 1) == BISPO_R)
-        // {
-        //     pb[peca].mover = bispo;
-        //     pp[peca].mover = bispo;
-        // }
-        // else if ((peca + 1) == rainha)
-        // {
-        //     pb[peca].mover = rainha;
-        //     pp[peca].mover = rainha;
-        // }
     }
 
     for (peca = 0; peca < 8; ++peca)
@@ -280,7 +248,6 @@ int atributo(struct Soldado *peca, enum id_atributo atributo)
         if (atributo == NOME) return peca->nome;
         else if (atributo == COR) return peca->cor;
         else if (atributo == CAPTURADA) return peca->capturada;
-        else if (atributo == PULAR_2_CASAS) return peca->pular_2_casas;
     else return 50;
 }
 
@@ -294,24 +261,24 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
 
     if (tabuleiro[ol][oc] != NULL)
     {
-        int adversario = (atributo(tabuleiro[ol][oc], COR) == PRETA) ? BRANCA : PRETA;
-        int movimento = (atributo(tabuleiro[ol][oc], COR) == BRANCA) ? ol - dl : dl - ol;
+        int pular_2_casas = False;
+        int adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
+        int movimento = (tabuleiro[ol][oc]->cor == BRANCA) ? ol - dl : dl - ol;
 
-        if (oc == dc && tabuleiro[dl][dc] == NULL)
+        if (ol == 1 || ol == 6) pular_2_casas = True;
+        int livre = (tabuleiro[ol-1][oc] == NULL && tabuleiro[ol+1][oc] == NULL);
+
+        if (oc == dc && livre && tabuleiro[dl][dc] == NULL)
         {
-            printf("\033[2;35HEM FRENTE\033[8H");
+            printf("\033[2;35HEM FRENTE\033[1H");
             if (movimento == 1)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                if (tabuleiro[ol][oc]->pular_2_casas)
-                    tabuleiro[ol][oc]->pular_2_casas = False;
                 tabuleiro[ol][oc] = NULL;
             }
-            else if (tabuleiro[ol][oc]->pular_2_casas && movimento == 2)
+            else if (pular_2_casas && movimento == 2)
             {
                 tabuleiro[dl][dc] = tabuleiro[ol][oc];
-                if (tabuleiro[ol][oc]->pular_2_casas)
-                    tabuleiro[ol][oc]->pular_2_casas = False;
                 tabuleiro[ol][oc] = NULL;
             }
         }
@@ -480,15 +447,15 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
     peca = atributo(tabuleiro[ol][oc], NOME);
 
     if (peca >= PEAO_D_1 && peca <= PEAO_R_4)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        peao(tabuleiro, crd);
     else if (peca == TORRE_D || peca == TORRE_R)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        torre(tabuleiro, crd);
     else if (peca == CAVALO_D || peca == CAVALO_R)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
-    else if (peca == BISPO_D || peca == BISPO_R)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
-    else if (peca == RAINHA)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
-    else if (peca == REI)
-        tabuleiro[ol][oc]->mover(tabuleiro, crd);
+        cavalo(tabuleiro, crd);
+    // else if (peca == BISPO_D || peca == BISPO_R)
+    //     bispo(tabuleiro, crd);
+    // else if (peca == RAINHA)
+    //     rainha(tabuleiro, crd);
+    // else if (peca == REI)
+    //     rei(tabuleiro, crd);
 }
