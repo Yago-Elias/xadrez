@@ -56,8 +56,6 @@ void mover_peca (struct Soldado *tabuleiro[8][8], coord crd);
 // mostra o tabuleiro de xadrez
 void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[]);
 
-void frente(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc);
-
 void peao(struct Soldado *tabuleiro[8][8], coord crd);
 
 void torre(struct Soldado *tabuleiro[8][8], coord crd);
