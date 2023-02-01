@@ -260,9 +260,8 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
         int movimento = (tabuleiro[ol][oc]->cor == BRANCA) ? ol - dl : dl - ol;
 
         if (ol == 1 || ol == 6) pular_2_casas = True;
-        int livre = (tabuleiro[ol-1][oc] == NULL && tabuleiro[ol+1][oc] == NULL);
 
-        if (oc == dc && livre && tabuleiro[dl][dc] == NULL)
+        if (oc == dc && tabuleiro[dl][dc] == NULL)
         {
             printf("\033[2;35HEM FRENTE\033[1H");
             if (movimento == 1)
