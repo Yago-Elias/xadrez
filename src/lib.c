@@ -38,13 +38,32 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
 
     for (peca = 0; peca < 16; peca++)
     {
-        pb[peca].nome = peca + 1;
+        if (peca < 8)
+        {
+            pb[peca].nome = PEAO;
+            pp[peca].nome = PEAO;
+        }
         pb[peca].cor = BRANCA;
         pb[peca].capturada = False;
-        pp[peca].nome = peca + 1;
         pp[peca].cor = PRETA;
         pp[peca].capturada = False;
     }
+    pb[8].nome = TORRE;
+    pb[9].nome = CAVALO;
+    pb[10].nome = BISPO;
+    pb[11].nome = RAINHA;
+    pb[12].nome = REI;
+    pb[13].nome = BISPO;
+    pb[14].nome = CAVALO;
+    pb[15].nome = TORRE;
+    pp[8].nome = TORRE;
+    pp[9].nome = CAVALO;
+    pp[10].nome = BISPO;
+    pp[11].nome = RAINHA;
+    pp[12].nome = REI;
+    pp[13].nome = BISPO;
+    pp[14].nome = CAVALO;
+    pp[15].nome = TORRE;
 
     for (peca = 0; peca < 8; ++peca)
     {
@@ -121,37 +140,16 @@ void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
                 {
                     switch (tabuleiro[i][j]->nome)
                     {
-                    case PEAO_D_1:
+                    case PEAO:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
                         break;
-                    case PEAO_D_2:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case PEAO_D_3:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case PEAO_D_4:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case PEAO_R_1:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case PEAO_R_2:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case PEAO_R_3:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case PEAO_R_4:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case TORRE_D:
+                    case TORRE:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
                         break;
-                    case CAVALO_D:
+                    case CAVALO:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_CAVALO);
                         break;
-                    case BISPO_D:
+                    case BISPO:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_BISPO);
                         break;
                     case REI:
@@ -160,52 +158,22 @@ void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
                     case RAINHA:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_RAINHA);
                         break;
-                    case BISPO_R:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_BISPO);
-                        break;
-                    case CAVALO_R:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_CAVALO);
-                        break;
-                    case TORRE_R:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
-                        break;
                     }
                 }
                 else
                 {
                     switch (tabuleiro[i][j]->nome)
                     {
-                    case PEAO_D_1:
+                    case PEAO:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
                         break;
-                    case PEAO_D_2:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case PEAO_D_3:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case PEAO_D_4:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case PEAO_R_1:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case PEAO_R_2:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case PEAO_R_3:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case PEAO_R_4:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case TORRE_D:
+                    case TORRE:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_TORRE);
                         break;
-                    case CAVALO_D:
+                    case CAVALO:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_CAVALO);
                         break;
-                    case BISPO_D:
+                    case BISPO:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_BISPO);
                         break;
                     case REI:
@@ -213,15 +181,6 @@ void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
                         break;
                     case RAINHA:
                         printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_RAINHA);
-                        break;
-                    case BISPO_R:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_BISPO);
-                        break;
-                    case CAVALO_R:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_CAVALO);
-                        break;
-                    case TORRE_R:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_TORRE);
                         break;
                     }
                 }
@@ -306,13 +265,13 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
         switch (promacao_peao())
         {
             case 1:
-                tabuleiro[dl][dc]->nome = TORRE_D;
+                tabuleiro[dl][dc]->nome = TORRE;
                 break;
             case 2:
-                tabuleiro[dl][dc]->nome = CAVALO_D;
+                tabuleiro[dl][dc]->nome = CAVALO;
                 break;
             case 3:
-                tabuleiro[dl][dc]->nome = BISPO_D;
+                tabuleiro[dl][dc]->nome = BISPO;
                 break;
             case 4:
                 tabuleiro[dl][dc]->nome = RAINHA;
@@ -724,13 +683,13 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
     oc = crd.origem_coluna;
     peca = atributo(tabuleiro[ol][oc], NOME);
 
-    if (peca >= PEAO_D_1 && peca <= PEAO_R_4)
+    if (peca == PEAO)
         peao(tabuleiro, crd);
-    else if (peca == TORRE_D || peca == TORRE_R)
+    else if (peca == TORRE)
         torre(tabuleiro, crd);
-    else if (peca == CAVALO_D || peca == CAVALO_R)
+    else if (peca == CAVALO)
         cavalo(tabuleiro, crd);
-    else if (peca == BISPO_D || peca == BISPO_R)
+    else if (peca == BISPO)
         bispo(tabuleiro, crd);
     else if (peca == RAINHA)
         rainha(tabuleiro, crd);
