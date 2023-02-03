@@ -55,21 +55,3 @@ void mover_peca (struct Soldado *tabuleiro[8][8], coord crd);
 
 // mostra o tabuleiro de xadrez
 void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[]);
-
-// movimenta os peões do jogo
-void peao(struct Soldado *tabuleiro[8][8], coord crd);
-
-// movimenta as torres do jogo
-void torre(struct Soldado *tabuleiro[8][8], coord crd);
-
-// movimenta os cavalos do jogo
-void cavalo(struct Soldado *tabuleiro[8][8], coord crd);
-
-// movimenta os bispos do jogo
-void bispo(struct Soldado *tabuleiro[8][8], coord crd);
-
-// // movimenta as rainhas do jogo
-// void rainha(struct Soldado *tabuleiro[8][8], coord crd);
-
-// // movimenta os reis do jogo
-// void rei(struct Soldado *tabuleiro[8][8], coord crd);
