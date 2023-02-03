@@ -417,7 +417,7 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
     int auxl=ol, auxc=oc, livre=True, capturar;
     int nordeste = ol > dl && oc < dc;
     int sudeste = ol < dl && oc < dc;
-    int sudoeste = ol < dc && oc > dc;
+    int sudoeste = ol < dl && oc > dc;
     int noroeste = ol > dl && oc > dc;
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
@@ -435,8 +435,8 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
-        if (livre || capturar)
+        capturar = (adversario == cor_adversario);
+        if (auxl == dl && auxc == dc && (livre || capturar))
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
@@ -455,8 +455,8 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
-        if (livre || capturar)
+        capturar = (adversario == cor_adversario);
+        if (auxl == dl && auxc == dc && (livre || capturar))
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
@@ -475,8 +475,8 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
-        if (livre || capturar)
+        capturar = (adversario == cor_adversario);
+        if (auxl == dl && auxc == dc && (livre || capturar))
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
@@ -495,8 +495,8 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        capturar = (auxl == dl && auxc == dc && adversario == cor_adversario);
-        if (livre || capturar)
+        capturar = (adversario == cor_adversario);
+        if (auxl == dl && auxc == dc && (livre || capturar))
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
