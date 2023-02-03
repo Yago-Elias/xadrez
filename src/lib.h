@@ -19,11 +19,11 @@
 #define P_P "\u265f"
 
 enum id_peca {
-    peao_d_1=1, peao_d_2, peao_d_3, peao_d_4, peao_r_1, peao_r_2, peao_r_3, peao_r_4,
-    torre_d, cavalo_d, bispo_d, rainha, rei, bispo_r, cavalo_r, torre_r, branca, preta
+    PEAO_D_1=1, PEAO_D_2, PEAO_D_3, PEAO_D_4, PEAO_R_1, PEAO_R_2, PEAO_R_3, PEAO_R_4,
+    TORRE_D, CAVALO_D, BISPO_D, RAINHA, REI, BISPO_R, CAVALO_R, TORRE_R
 };
-enum id_jogo {JOGAR=1, CONFIG, SAIR};
-enum id_atributo {NOME, COR, CAPTURADA, PULAR_2_CASAS};
+enum id_jogo {JOGAR=1, CONFIG, SAIR, BRANCA, PRETA};
+enum id_atributo {NOME, COR, CAPTURADA};
 
 typedef struct Coordenada
 {
@@ -32,8 +32,7 @@ typedef struct Coordenada
 } coord;
 
 struct Soldado {
-    int nome, cor, capturada, pular_2_casas;
-    void (*mover)(struct Soldado *tabuleiro[8][8], coord crd);
+    int nome, cor, capturada;
 };
 
 // menu do jogo
@@ -56,7 +55,3 @@ void mover_peca (struct Soldado *tabuleiro[8][8], coord crd);
 
 // mostra o tabuleiro de xadrez
 void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[]);
-
-void frente(struct Soldado *tabuleiro[8][8], int ol, int oc, int dl, int dc);
-
-void peao(struct Soldado *tabuleiro[8][8], coord crd);
