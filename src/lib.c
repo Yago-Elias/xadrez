@@ -242,6 +242,25 @@ int atributo(struct Soldado *peca, enum id_atributo atributo)
     else return 50;
 }
 
+int promacao_peao()
+{
+    int peca;
+    printf(
+        "\033[13H  ---= PEÃO PROMOVIDO =---   \n"
+        "       [1]   TORRE \n"
+        "       [2]   CAVALO\n"
+        "       [3]   BISPO \n"
+        "       [4]   RAINHA\n"
+        " PROMOVER PARA > "
+    );
+    do
+    {
+        printf("\033[18;18H   \033[18;18H");
+        scanf(" %d", &peca);
+    } while (peca < 1 || peca > 4);
+    return peca;
+}
+
 void peao(struct Soldado *tabuleiro[8][8], coord crd)
 {
     int ol = crd.origem_linha;
@@ -280,6 +299,24 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
+        }
+    }
+    if ((dl == 0 || dl == 7) && movimento == 1)
+    {
+        switch (promacao_peao())
+        {
+            case 1:
+                tabuleiro[dl][dc]->nome = TORRE_D;
+                break;
+            case 2:
+                tabuleiro[dl][dc]->nome = CAVALO_D;
+                break;
+            case 3:
+                tabuleiro[dl][dc]->nome = BISPO_D;
+                break;
+            case 4:
+                tabuleiro[dl][dc]->nome = RAINHA;
+                break;
         }
     }
 }
