@@ -18,10 +18,7 @@
 #define P_CAVALO "\u265e"
 #define P_P "\u265f"
 
-enum id_peca {
-    PEAO_D_1=1, PEAO_D_2, PEAO_D_3, PEAO_D_4, PEAO_R_1, PEAO_R_2, PEAO_R_3, PEAO_R_4,
-    TORRE_D, CAVALO_D, BISPO_D, RAINHA, REI, BISPO_R, CAVALO_R, TORRE_R
-};
+enum id_peca {PEAO=1, TORRE, CAVALO, BISPO, RAINHA, REI};
 enum id_jogo {JOGAR=1, CONFIG, SAIR, BRANCA, PRETA};
 enum id_atributo {NOME, COR, CAPTURADA};
 

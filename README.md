@@ -7,5 +7,5 @@ Etapas de desenvolvimento:
 
 - [x] Desenhar o layout do tabuleiro
 - [x] Posicionar as peças no tabuleiro
-- [ ] Movimento das peças
+- [x] Movimento das peças
 - [ ] Mostrar registro dos movimentos das peças
