@@ -1,5 +1,7 @@
 #include "lib.h"
 
+#define PECA(cor, pb, pp) (cor == BRANCA? pb : pp)
+
 int menu()
 {
     int opc_menu;
@@ -119,7 +121,7 @@ void configurar(int cor_tabuleiro[])
 
 void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
 {
-    int i, j, num_linha=8, cor_tabuleiro_atual;
+    int i, j, num_linha=8, cor_atual;
     int cor_borda = cor_tabuleiro[2];
     system("clear");
     sleep(0.5);
@@ -131,61 +133,35 @@ void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
 
         for (j = 0; j < 8; ++j)
         {
-            if ((i + j) % 2 == 0) cor_tabuleiro_atual = cor_tabuleiro[0];
-            else cor_tabuleiro_atual = cor_tabuleiro[1];
+            if ((i + j) % 2 == 0) cor_atual = cor_tabuleiro[0];
+            else cor_atual = cor_tabuleiro[1];
 
             if (tabuleiro[i][j] != NULL)
             {
-                if (tabuleiro[i][j]->cor == BRANCA)
+                int cor = tabuleiro[i][j]->cor;
+                switch (tabuleiro[i][j]->nome)
                 {
-                    switch (tabuleiro[i][j]->nome)
-                    {
-                    case PEAO:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_P);
-                        break;
-                    case TORRE:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_TORRE);
-                        break;
-                    case CAVALO:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_CAVALO);
-                        break;
-                    case BISPO:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_BISPO);
-                        break;
-                    case REI:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_REI);
-                        break;
-                    case RAINHA:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, B_RAINHA);
-                        break;
-                    }
-                }
-                else
-                {
-                    switch (tabuleiro[i][j]->nome)
-                    {
-                    case PEAO:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_P);
-                        break;
-                    case TORRE:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_TORRE);
-                        break;
-                    case CAVALO:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_CAVALO);
-                        break;
-                    case BISPO:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_BISPO);
-                        break;
-                    case REI:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_REI);
-                        break;
-                    case RAINHA:
-                        printf("\033[%dm\033[30m %s \033[m", cor_tabuleiro_atual, P_RAINHA);
-                        break;
-                    }
+                case PEAO:
+                    printf("\033[%dm\033[30m %s \033[m", cor_atual, PECA(cor, B_P, P_P));
+                    break;
+                case TORRE:
+                    printf("\033[%dm\033[30m %s \033[m", cor_atual, PECA(cor, B_TORRE, P_TORRE));
+                    break;
+                case CAVALO:
+                    printf("\033[%dm\033[30m %s \033[m", cor_atual, PECA(cor, B_CAVALO, P_CAVALO));
+                    break;
+                case BISPO:
+                    printf("\033[%dm\033[30m %s \033[m", cor_atual, PECA(cor, B_BISPO, P_BISPO));
+                    break;
+                case REI:
+                    printf("\033[%dm\033[30m %s \033[m", cor_atual, PECA(cor, B_REI, P_REI));
+                    break;
+                case RAINHA:
+                    printf("\033[%dm\033[30m %s \033[m", cor_atual, PECA(cor, B_RAINHA, P_RAINHA));
+                    break;
                 }
             }
-            else printf("\033[%dm   \033[m", cor_tabuleiro_atual);
+            else printf("\033[%dm   \033[m", cor_atual);
         }
         printf("\033[%dm  \033[m\n", cor_borda);
     }
