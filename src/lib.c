@@ -203,6 +203,7 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
     int dl = crd.destino_linha;
     int dc = crd.destino_coluna;
     int pular_2_casas=False;
+    int actl = ol, actc = oc;
     int adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
     int movimento = (tabuleiro[ol][oc]->cor == BRANCA) ? ol - dl : dl - ol;
 
@@ -213,44 +214,52 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
         if (movimento == 1)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
+            actl = dl;
+            actc = dc;
             tabuleiro[ol][oc] = NULL;
         }
         else if (pular_2_casas && movimento == 2)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
+            actl = dl;
+            actc = dc;
             tabuleiro[ol][oc] = NULL;
         }
     }
-    else if (atributo(tabuleiro[dl][dc], COR) == adversario)
+    else if (atributo(tabuleiro[dl][dc], COR) == adversario && movimento == 1)
     {
         int avanco = (tabuleiro[ol][oc]->cor == BRANCA) ? ol > dl : ol < dl;
 
         if (avanco && oc < dc)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
+            actl = dl;
+            actc = dc;
             tabuleiro[ol][oc] = NULL;
         }
         else if (avanco && oc > dc)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
+            actl = dl;
+            actc = dc;
             tabuleiro[ol][oc] = NULL;
         }
     }
-    if ((dl == 0 || dl == 7) && movimento == 1)
+    if ((actl == 0 || actl == 7) && movimento == 1)
     {
         switch (promacao_peao())
         {
             case 1:
-                tabuleiro[dl][dc]->nome = TORRE;
+                tabuleiro[actl][actc]->nome = TORRE;
                 break;
             case 2:
-                tabuleiro[dl][dc]->nome = CAVALO;
+                tabuleiro[actl][actc]->nome = CAVALO;
                 break;
             case 3:
-                tabuleiro[dl][dc]->nome = BISPO;
+                tabuleiro[actl][actc]->nome = BISPO;
                 break;
             case 4:
-                tabuleiro[dl][dc]->nome = RAINHA;
+                tabuleiro[actl][actc]->nome = RAINHA;
                 break;
         }
     }
