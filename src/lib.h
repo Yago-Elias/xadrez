@@ -20,7 +20,7 @@
 
 enum id_peca {PEAO=1, TORRE, CAVALO, BISPO, RAINHA, REI};
 enum id_jogo {JOGAR=1, CONFIG, SAIR, BRANCA, PRETA};
-enum id_atributo {NOME, COR, CAPTURADA};
+enum id_atributo {NOME, COR, CAPTURADA, ESPECIAL};
 
 typedef struct Coordenada
 {
@@ -29,8 +29,10 @@ typedef struct Coordenada
 } coord;
 
 struct Soldado {
-    int nome, cor, capturada;
+    int nome, cor, capturada, movimento_especial;
 };
+
+extern int roque;
 
 // menu do jogo
 int menu ();

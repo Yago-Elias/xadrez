@@ -1,5 +1,7 @@
 #include "lib.h"
 
+int roque = True;
+
 #define PECA(cor, pb, pp) (cor == BRANCA? pb : pp)
 
 int menu()
@@ -47,8 +49,10 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
         }
         pb[peca].cor = BRANCA;
         pb[peca].capturada = False;
+        pb[peca].movimento_especial = True;
         pp[peca].cor = PRETA;
         pp[peca].capturada = False;
+        pp[peca].movimento_especial = True;
     }
     pb[8].nome = TORRE;
     pb[9].nome = CAVALO;
@@ -74,6 +78,7 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
         tabuleiro[6][peca] = &pb[peca];
         tabuleiro[7][peca] = &pb[peca+8];
     }
+    roque = True;
 }
 
 void configurar(int cor_tabuleiro[])
@@ -174,6 +179,7 @@ int atributo(struct Soldado *peca, enum id_atributo atributo)
         if (atributo == NOME) return peca->nome;
         else if (atributo == COR) return peca->cor;
         else if (atributo == CAPTURADA) return peca->capturada;
+        else if (atributo == ESPECIAL) return peca->movimento_especial;
     else return 50;
 }
 
@@ -267,8 +273,6 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
 
 void torre(struct Soldado *tabuleiro[8][8], coord crd)
 {
-    printf("\033[2;35HTORRE\033[1H");
-
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
     int dl = crd.destino_linha;
@@ -280,12 +284,12 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
     int oeste = ol == dl && oc > dc;
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
+    struct Soldado *p_torre = tabuleiro[ol][oc], *p_peca = tabuleiro[dl][dc];
 
     if (norte)
     {
-        while (auxl > dl)
+        while (auxl > (dl + 1))
         {
-            printf("\033[%d;35HFRENTE [%d, %d]\033[1H", auxl, auxl, auxc);
             auxl--;
             if (tabuleiro[auxl][auxc] != NULL)
             {
@@ -293,17 +297,11 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        if (livre || (auxl == dl && adversario == cor_adversario))
-        {
-            tabuleiro[dl][dc] = tabuleiro[ol][oc];
-            tabuleiro[ol][oc] = NULL;
-        }
     }
     else if (leste)
     {
-        while (auxc < dc)
+        while (auxc < (dc - 1))
         {
-            printf("\033[%d;35HESQUERDA [%d, %d]\033[1H", auxl, auxl, auxc);
             auxc++;
             if (tabuleiro[auxl][auxc] != NULL)
             {
@@ -311,17 +309,11 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        if (livre || (auxc == dc && adversario == cor_adversario))
-        {
-            tabuleiro[dl][dc] = tabuleiro[ol][oc];
-            tabuleiro[ol][oc] = NULL;
-        }
     }
     else if (sul)
     {
-        while (auxl < dl)
+        while (auxl < (dl - 1))
         {
-            printf("\033[%d;35HTRÁS [%d, %d]\033[1H", auxl, auxl, auxc);
             auxl++;
             if (tabuleiro[auxl][auxc] != NULL)
             {
@@ -329,17 +321,11 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        if (livre || (auxl == dl && adversario == cor_adversario))
-        {
-            tabuleiro[dl][dc] = tabuleiro[ol][oc];
-            tabuleiro[ol][oc] = NULL;
-        }
     }
     else if (oeste)
     {
-        while (auxc > dc)
+        while (auxc > (dc + 1))
         {
-            printf("\033[%d;35HESQUERDA [%d, %d]\033[1H", auxl, auxl, auxc);
             auxc--;
             if (tabuleiro[auxl][auxc] != NULL)
             {
@@ -347,10 +333,40 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
                 break;
             }
         }
-        if (livre || (auxc == dc && adversario == cor_adversario))
+    }
+
+    if (livre)
+    {
+        if (tabuleiro[dl][dc] == NULL || adversario == cor_adversario)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
+            if (roque) roque = False;
+        }
+    }
+    
+    if ((leste || oeste) && p_peca != NULL && roque)
+    {
+        auxc = oc;
+        while (auxc < 3 || auxc > 5)
+        {
+            if (oc == 0) auxc++;
+            else auxc--;
+            if (tabuleiro[dl][auxc] != NULL)
+            {
+                livre = False;
+                break;
+            }
+        }
+        if (livre && p_peca->nome == REI)
+        {
+            roque = False;
+            tabuleiro[ol][oc] = NULL;
+            tabuleiro[dl][dc] = NULL;
+            auxc = (oc == 0) ? 3 : 5;
+            tabuleiro[dl][auxc] = p_torre;
+            auxc = (oc == 0) ? 2 : 6;
+            tabuleiro[dl][auxc] = p_peca;
         }
     }
 }
