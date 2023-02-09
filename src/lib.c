@@ -1,8 +1,7 @@
 #include "lib.h"
+#define PECA(cor, pb, pp) (cor == BRANCA? pb : pp)
 
 int roque = True;
-
-#define PECA(cor, pb, pp) (cor == BRANCA? pb : pp)
 
 int menu()
 {
