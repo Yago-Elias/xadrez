@@ -179,7 +179,7 @@ int atributo(struct Soldado *peca, enum id_atributo atributo)
         else if (atributo == COR) return peca->cor;
         else if (atributo == CAPTURADA) return peca->capturada;
         else if (atributo == ESPECIAL) return peca->movimento_especial;
-    else return 50;
+    else return False;
 }
 
 int promacao_peao()
@@ -677,11 +677,13 @@ void rei(struct Soldado *tabuleiro[8][8], coord crd)
 
 void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
 {
-    int peca, ol, oc;
+    int peca, ol, oc, adversario;
 
     ol = crd.origem_linha;
     oc = crd.origem_coluna;
     peca = atributo(tabuleiro[ol][oc], NOME);
+    adversario = (atributo(tabuleiro[ol][oc], COR) != False) ?
+    tabuleiro[ol][oc]->cor == BRANCA ? PRETA : BRANCA;
 
     if (peca == PEAO)
         peao(tabuleiro, crd);
@@ -695,4 +697,372 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
         rainha(tabuleiro, crd);
     else if (peca == REI)
         rei(tabuleiro, crd);
+    
+    reiniciar_en_passant (tabuleiro, adversario);
+
+    coord posicao_rei = localiza_rei(tabuleiro, adversario);
+    int xeque_cont = xeque_mate(tabuleiro, posicao_rei);
+    char cor_adversario[10];
+    if (adversario == BRANCA)
+        strcpy(cor_adversario, "BRANCAS");
+    else
+        strcpy(cor_adversario, "PRETAS");
+    if (xeque_cont > 0 && xeque_cont < 9)
+        printf("\033[5;35H%s EM CHEQUE!\033[1H", cor_adversario);
+    else if (xeque_cont == 9)
+        printf("\033[5;35H%s EM CHEQUE MATE!\033[1H", cor_adversario);
+}
+
+
+void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario)
+{
+    int linha, coluna;
+    
+    for (int linha = 0; linha < 8; linha++) {
+        for (int coluna = 0; coluna < 8; coluna++) {
+            if (tabuleiro[linha][coluna] != NULL && tabuleiro[linha][coluna]->cor == adversario) {
+                tabuleiro[linha][coluna]->en_passant = False;
+            }
+        }
+    }
+}
+
+coord localiza_rei (struct Soldado *tabuleiro[8][8], int cor)
+{
+    coord posicao_rei;
+    
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++)
+            if (tabuleiro[i][j] != NULL)
+            {
+                if (tabuleiro[i][j]->nome == REI && tabuleiro[i][j]->cor == cor)
+                {
+                    posicao_rei.origem_linha = i;
+                    posicao_rei.origem_coluna = j;
+                    break;
+                }
+            }
+    return posicao_rei;
+}
+
+int xeque_torre (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+{
+  int ol = posicao.origem_linha;
+  int oc = posicao.origem_coluna;
+  int auxl = ol;
+  int auxc = oc;
+  int somador_linha = 1;
+  int somador_coluna = 1;
+  int adversario = cor == BRANCA ? PRETA : BRANCA;
+  
+  for (int i = 0; i < 2; i++, somador_linha *= -1) 
+    {
+        auxl += somador_linha;
+        if (auxl >= 0 && auxl <= 7) {
+            while (tabuleiro[auxl][auxc] == NULL)
+            {
+                auxl += somador_linha;
+                if (auxl < 0 || auxl > 7)
+                {
+                    auxl -= somador_linha;
+                    break;
+                }
+            }
+            
+            if (auxl >= 0 && auxl <= 7 && tabuleiro[auxl][auxc] != NULL)
+            {
+                if (tabuleiro[auxl][auxc]->cor == adversario && tabuleiro[auxl][auxc]->nome == TORRE)
+                {
+                    return True;
+                }     
+            }
+        }
+        
+        auxl = ol;        
+    } 
+    
+    for (int i = 0; i < 2; i++, somador_coluna *= -1) 
+    {
+        auxc += somador_coluna;
+        if (auxc >= 0 && auxc <= 7) {
+            while (tabuleiro[auxl][auxc] == NULL)
+            {
+                auxc += somador_coluna;
+                if (auxc < 0 || auxc > 7)
+                {
+                    auxc -= somador_coluna;
+                    break;
+                }
+            }
+            
+            if (auxc >= 0 && auxc <= 7 && tabuleiro[auxl][auxc] != NULL)
+            {
+                if (tabuleiro[auxl][auxc]->cor == adversario && tabuleiro[auxl][auxc]->nome == TORRE)
+                {
+                    return True;
+                }     
+            }
+        }
+        
+        auxc = oc;        
+    } 
+    
+    return False;
+}
+
+int xeque_bispo (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+{
+    int ol = posicao.origem_linha;
+    int oc = posicao.origem_coluna;
+    int auxl = ol;
+    int auxc = oc;
+    int somador_linha = 1;
+    int somador_coluna = 1;
+    int adversario = cor == BRANCA ? PRETA : BRANCA;
+    
+    for (int i = 0; i < 4; i++, somador_linha *= (i==2) ? -1: 1, somador_coluna *= -1)
+    {
+        auxl += somador_linha;
+        auxc += somador_coluna;
+        
+        if (auxl >= 0 && auxl <= 7 && auxc >=0 && auxc <= 7)
+        {
+            while (tabuleiro[auxl][auxc] == NULL)
+            {
+                auxl += somador_linha;
+                auxc += somador_coluna;
+                
+                if (auxl < 0 || auxl > 7 || auxc < 0 || auxc > 7)
+                {
+                    auxl -= somador_linha;
+                    auxc -= somador_coluna;
+                    break;
+                }
+            } 
+            
+            if (auxl >= 0 && auxl <= 7 && auxl >= 0 && auxl <= 7 && tabuleiro[auxl][auxc] != NULL)
+            {
+                if (tabuleiro[auxl][auxc]->cor == adversario && tabuleiro[auxl][auxc]->nome == BISPO)
+                {
+                    return True;
+                    break;
+                }        
+            }       
+        }
+        
+        auxl = ol;
+        auxc = oc;    
+    }
+    
+    return False;  
+}
+
+int xeque_cavalo (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+{
+    int ol = posicao.origem_linha;
+    int oc = posicao.origem_coluna;
+    int auxl = ol;
+    int auxc = oc;
+    struct Soldado *aux;
+    int adversario = cor == BRANCA ? PRETA : BRANCA;
+    
+    int varia_linha[8] = {-2, -2, -1, -1, 1, 1, 2, 2};
+    int varia_coluna[8] = {-1, 1, -2, 2, -2, 2, -1, 1};
+    
+    for (int i=0; i<8; i++)
+    {
+        aux = (ol+varia_linha[i]>=0 && ol+varia_linha[i]<=7 && oc+varia_coluna[i]>=0 && oc+varia_coluna[i]<=7)?tabuleiro[ol+varia_linha[i]][oc+varia_coluna[i]]:NULL;
+        
+        if (aux != NULL)
+            if (aux->nome == CAVALO && aux->cor == adversario)
+                return True;
+    } 
+    
+    return False;  
+}
+
+int xeque_peao (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+{
+    int ol = posicao.origem_linha;
+    int oc = posicao.origem_coluna;
+    int auxl = ol;
+    int auxc = oc;
+    struct Soldado *aux;
+    int avanco = cor == BRANCA ? -1 : 1;
+    int adversario = cor == BRANCA ? PRETA : BRANCA; 
+    
+    aux = (ol+avanco>=0 && ol+avanco<=7 && oc-1>=0) ? tabuleiro[ol+avanco][oc-1] : NULL;
+    
+    if (aux != NULL)
+        if (aux->nome == PEAO && aux->cor == adversario)
+            return True;
+    
+    aux = (ol+avanco>=0 && ol+avanco<=7 && oc+1<=7) ? tabuleiro[ol+avanco][oc+1] : NULL;
+    
+    if (aux != NULL)
+        if (aux->nome == PEAO && aux->cor == adversario)
+            return True;
+            
+    return False;           
+}
+
+int xeque_rainha (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+{
+  int ol = posicao.origem_linha;
+  int oc = posicao.origem_coluna;
+  int auxl = ol;
+  int auxc = oc;
+  int somador_linha = 1;
+  int somador_coluna = 1;
+  int adversario = cor == BRANCA ? PRETA : BRANCA;
+  
+  for (int i = 0; i < 2; i++, somador_linha *= -1) 
+    {
+        auxl += somador_linha;
+        if (auxl >= 0 && auxl <= 7) {
+            while (tabuleiro[auxl][auxc] == NULL)
+            {
+                auxl += somador_linha;
+                if (auxl < 0 || auxl > 7)
+                {
+                    auxl -= somador_linha;
+                    break;
+                }
+            }
+            
+            if (auxl >= 0 && auxl <= 7 && tabuleiro[auxl][auxc] != NULL)
+            {
+                if (tabuleiro[auxl][auxc]->cor == adversario && tabuleiro[auxl][auxc]->nome == RAINHA)
+                {
+                    return True;
+                }     
+            }
+        }
+        
+        auxl = ol;        
+    } 
+    
+    for (int i = 0; i < 2; i++, somador_coluna *= -1) 
+    {
+        auxc += somador_coluna;
+        if (auxc >= 0 && auxc <= 7) {
+            while (tabuleiro[auxl][auxc] == NULL)
+            {
+                auxc += somador_coluna;
+                if (auxc < 0 || auxc > 7)
+                {
+                    auxc -= somador_coluna;
+                    break;
+                }
+            }
+            
+            if (auxc >= 0 && auxc <= 7 && tabuleiro[auxl][auxc] != NULL)
+            {
+                if (tabuleiro[auxl][auxc]->cor == adversario && tabuleiro[auxl][auxc]->nome == RAINHA)
+                {
+                    return True;
+                }     
+            }
+        }
+        
+        auxc = oc;        
+    } 
+    
+    auxl = ol;
+    auxc = oc;
+    somador_linha = 1;
+    somador_coluna = 1;
+    
+    for (int i = 0; i < 4; i++, somador_linha *= (i==2) ? -1 : 1, somador_coluna *= -1)
+    {
+        auxl += somador_linha;
+        auxc += somador_coluna;
+        
+        if (auxl >= 0 && auxl <= 7 && auxc >=0 && auxc <= 7)
+        {
+            while (tabuleiro[auxl][auxc] == NULL)
+            {
+                auxl += somador_linha;
+                auxc += somador_coluna;
+                
+                if (auxl < 0 || auxl > 7 || auxc < 0 || auxc > 7)
+                {
+                    auxl -= somador_linha;
+                    auxc -= somador_coluna;
+                    break;
+                }
+            } 
+            
+            if (auxl >= 0 && auxl <= 7 && auxl >= 0 && auxl <= 7 && tabuleiro[auxl][auxc] != NULL)
+            {
+                if (tabuleiro[auxl][auxc]->cor == adversario && tabuleiro[auxl][auxc]->nome == RAINHA)
+                {
+                    return True;
+                    break;
+                }        
+            }       
+        }
+        
+        auxl = ol;
+        auxc = oc;    
+    }
+    
+    return False;        
+}
+
+int em_xeque (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+{
+    int xeques = 0;
+    
+    xeques+= xeque_torre(tabuleiro, posicao, cor);
+    xeques+= xeque_bispo(tabuleiro, posicao, cor);
+    xeques+= xeque_cavalo(tabuleiro, posicao, cor);
+    xeques+= xeque_peao(tabuleiro, posicao, cor);
+    xeques+= xeque_rainha(tabuleiro, posicao, cor);
+    return xeques;
+}
+
+int xeque_mate (struct Soldado *tabuleiro[8][8], coord posicao_rei)
+{
+    int ol = posicao_rei.origem_linha;
+    int oc = posicao_rei.origem_coluna;
+    int posicoes_invalidas = 0;
+    struct Soldado *aux;
+    coord auxcoord;
+    int cor = tabuleiro[ol][oc]->cor;
+    int xeques = 1;
+    int varia_linha[8] = {-1, -1, -1, 0, 1, 1, 1, 0};
+    int varia_coluna[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
+    
+    
+    if (!(em_xeque(tabuleiro, posicao_rei, cor)))
+    {
+        return False;
+    }
+    else
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            int auxl = ol+varia_linha[i];
+            int auxc = oc+varia_coluna[i];
+            if (auxl>=0 && auxl<=7 && auxc>=0 && auxc<=7)
+            {
+                if (tabuleiro[auxl][auxc] != NULL && tabuleiro[auxl][auxc]->nome != REI)
+                {
+                    xeques+= 1;
+                }
+                else
+                {
+                    auxcoord.origem_linha = auxl;
+                    auxcoord.origem_coluna = auxc;
+                    xeques+= (em_xeque(tabuleiro, auxcoord, cor)) ? 1 : 0;
+                }   
+            }
+            else {
+                posicoes_invalidas++;
+            }   
+        }
+    }
+    
+    return xeques + posicoes_invalidas;
 }
