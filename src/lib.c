@@ -1,5 +1,5 @@
 #include "lib.h"
-#define PECA(cor, pb, pp) (cor == BRANCA? pb : pp)
+#define PECA(cor, pb, pp)(cor == BRANCA ? pb : pp)
 
 int roque = True;
 
@@ -682,8 +682,7 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
     ol = crd.origem_linha;
     oc = crd.origem_coluna;
     peca = atributo(tabuleiro[ol][oc], NOME);
-    adversario = (atributo(tabuleiro[ol][oc], COR) != False) ?
-    tabuleiro[ol][oc]->cor == BRANCA ? PRETA : BRANCA;
+    adversario = (atributo(tabuleiro[ol][oc], COR) != False) ? ((tabuleiro[ol][oc]->cor == BRANCA) ? PRETA : BRANCA) : False;
 
     if (peca == PEAO)
         peao(tabuleiro, crd);
@@ -721,7 +720,7 @@ void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario)
     for (int linha = 0; linha < 8; linha++) {
         for (int coluna = 0; coluna < 8; coluna++) {
             if (tabuleiro[linha][coluna] != NULL && tabuleiro[linha][coluna]->cor == adversario) {
-                tabuleiro[linha][coluna]->en_passant = False;
+                tabuleiro[linha][coluna]->movimento_especial = False;
             }
         }
     }

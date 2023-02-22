@@ -43,10 +43,7 @@ void configurar (int cor_tabuleiro[]);
 // função responsável por inicializar o tabuleiro de xadrez
 void inicializar (struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[]);
 
-/*
-com base na entrada do usuário a função retorna a "linha" e "coluna" da matriz, correspondente 
-a posição ou ao movimento da peça de xadrez
-*/
+// converte as coordenadas da entrada do usuário para os índices corretos da matriz
 void coordenada (int linha, char coluna, int *destino_linha, int *destino_coluna);
 
 // funçao que movimenta as peças no tabuleiro
@@ -54,3 +51,30 @@ void mover_peca (struct Soldado *tabuleiro[8][8], coord crd);
 
 // mostra o tabuleiro de xadrez
 void interface (struct Soldado *tabuleiro[8][8], int cor_tabuleiro[]);
+
+// regra en passant
+void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario);
+
+// busca a posição atual do rei
+coord localiza_rei (struct Soldado *tabuleiro[8][8], int cor);
+
+// xeque da peça torre
+int xeque_torre (struct Soldado *tabuleiro[8][8], coord posicao, int cor);
+
+// xeque da peça bispo
+int xeque_bispo (struct Soldado *tabuleiro[8][8], coord posicao, int cor);
+
+// xeque da peça cavalo
+int xeque_cavalo (struct Soldado *tabuleiro[8][8], coord posicao, int cor);
+
+// xeque da peça peao
+int xeque_peao (struct Soldado *tabuleiro[8][8], coord posicao, int cor);
+
+// xeque da peça rainha
+int xeque_rainha (struct Soldado *tabuleiro[8][8], coord posicao, int cor);
+
+// rei em xeque
+int em_xeque (struct Soldado *tabuleiro[8][8], coord posicao, int cor);
+
+// rei em xeque mate
+int xeque_mate (struct Soldado *tabuleiro[8][8], coord posicao_rei);
