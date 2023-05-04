@@ -32,7 +32,7 @@ struct Soldado {
     int nome, cor, capturada, movimento_especial;
 };
 
-extern int roque;
+extern int roque_branca, roque_preta;
 
 // menu do jogo
 int menu ();

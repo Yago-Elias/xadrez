@@ -1,7 +1,7 @@
 #include "lib.h"
 #define PECA(cor, pb, pp)(cor == BRANCA ? pb : pp)
 
-int roque = True;
+int roque_branca, roque_preta;
 
 int menu()
 {
@@ -77,7 +77,8 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
         tabuleiro[6][peca] = &pb[peca];
         tabuleiro[7][peca] = &pb[peca+8];
     }
-    roque = True;
+    roque_branca = True;
+    roque_preta = True;
 }
 
 void configurar(int cor_tabuleiro[])
@@ -283,6 +284,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
     int oeste = ol == dl && oc > dc;
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
+    int roque = (cor_adversario == PRETA) ? roque_branca : roque_preta;
     struct Soldado *p_torre = tabuleiro[ol][oc], *p_peca = tabuleiro[dl][dc];
 
     if (norte)
@@ -340,7 +342,11 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
-            if (roque) roque = False;
+            if (roque)
+                if (tabuleiro[ol][oc]->cor == PRETA)
+                    roque_preta = False;
+                else
+                    roque_branca = False;
         }
     }
     
@@ -359,7 +365,10 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
         }
         if (livre && p_peca->nome == REI)
         {
-            roque = False;
+            if (tabuleiro[ol][oc]->cor == PRETA)
+                roque_preta = False;
+            else
+                roque_branca = False;
             tabuleiro[ol][oc] = NULL;
             tabuleiro[dl][dc] = NULL;
             auxc = (oc == 0) ? 3 : 5;
@@ -677,41 +686,42 @@ void rei(struct Soldado *tabuleiro[8][8], coord crd)
 
 void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
 {
-    int peca, ol, oc, adversario;
-
-    ol = crd.origem_linha;
-    oc = crd.origem_coluna;
-    peca = atributo(tabuleiro[ol][oc], NOME);
-    adversario = (atributo(tabuleiro[ol][oc], COR) != False) ? ((tabuleiro[ol][oc]->cor == BRANCA) ? PRETA : BRANCA) : False;
-
-    if (peca == PEAO)
-        peao(tabuleiro, crd);
-    else if (peca == TORRE)
-        torre(tabuleiro, crd);
-    else if (peca == CAVALO)
-        cavalo(tabuleiro, crd);
-    else if (peca == BISPO)
-        bispo(tabuleiro, crd);
-    else if (peca == RAINHA)
-        rainha(tabuleiro, crd);
-    else if (peca == REI)
-        rei(tabuleiro, crd);
+    int ol = crd.origem_linha;
+    int oc = crd.origem_coluna;
     
-    reiniciar_en_passant (tabuleiro, adversario);
+    if (tabuleiro[ol][oc] != NULL)
+    {
+        int peca = tabuleiro[ol][oc]->nome;
+        int adversario = (tabuleiro[ol][oc]->cor == BRANCA) ? PRETA : BRANCA;
 
-    coord posicao_rei = localiza_rei(tabuleiro, adversario);
-    int xeque_cont = xeque_mate(tabuleiro, posicao_rei);
-    char cor_adversario[10];
-    if (adversario == BRANCA)
-        strcpy(cor_adversario, "BRANCAS");
-    else
-        strcpy(cor_adversario, "PRETAS");
-    if (xeque_cont > 0 && xeque_cont < 9)
-        printf("\033[5;35H%s EM CHEQUE!\033[1H", cor_adversario);
-    else if (xeque_cont == 9)
-        printf("\033[5;35H%s EM CHEQUE MATE!\033[1H", cor_adversario);
+        if (peca == PEAO)
+            peao(tabuleiro, crd);
+        else if (peca == TORRE)
+            torre(tabuleiro, crd);
+        else if (peca == CAVALO)
+            cavalo(tabuleiro, crd);
+        else if (peca == BISPO)
+            bispo(tabuleiro, crd);
+        else if (peca == RAINHA)
+            rainha(tabuleiro, crd);
+        else if (peca == REI)
+            rei(tabuleiro, crd);
+        
+        reiniciar_en_passant (tabuleiro, adversario);
+
+        coord posicao_rei = localiza_rei(tabuleiro, adversario);
+        int xeque_cont = xeque_mate(tabuleiro, posicao_rei);
+        char cor_adversario[10];
+        if (adversario == BRANCA)
+            strcpy(cor_adversario, "BRANCAS");
+        else
+            strcpy(cor_adversario, "PRETAS");
+        if (xeque_cont > 0 && xeque_cont < 9)
+            printf("\033[5;35H%s EM CHEQUE!\033[1H", cor_adversario);
+        else if (xeque_cont == 9)
+            printf("\033[5;35H%s EM CHEQUE MATE!\033[1H", cor_adversario);
+    }
 }
-
 
 void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario)
 {
