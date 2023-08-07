@@ -54,3 +54,4 @@ dkms.conf
 # my configuration file
 *.bug
 *.ref
+*.sh
