@@ -2,6 +2,7 @@
 #define PECA(cor, pb, pp)(cor == BRANCA ? pb : pp)
 
 int roque_branca, roque_preta;
+int jogador_atual = BRANCA;
 
 int menu()
 {
@@ -33,6 +34,7 @@ void coordenada(int linha, char coluna, int *destino_linha, int *destino_coluna)
     else if (coluna == 'f') *destino_coluna = 5;
     else if (coluna == 'g') *destino_coluna = 6;
     else if (coluna == 'h') *destino_coluna = 7;
+    else *destino_coluna = 24;
 }
 
 void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[])
@@ -721,6 +723,71 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
         else if (xeque_cont == 9)
             printf("\033[5;35H%s EM CHEQUE MATE!\033[1H", cor_adversario);
     }
+}
+
+int coordenada_valida(struct Soldado *tabuleiro[8][8] , coord crd) {
+    int ol = crd.origem_linha;
+    int oc = crd.origem_coluna;
+    int dl = crd.destino_linha;
+    int dc = crd.destino_coluna;
+    
+    if (ol < 0 || ol > 7 || oc < 0 || oc > 7 || dl < 0 || dl > 7 || dc < 0 || dc > 7) {
+        printf("\033[5;35HMOVIMENTO INVÁLIDO!\033[1H");
+        return False;
+    }
+    
+    int peca = tabuleiro[ol][oc]->nome;
+    int movimento = (tabuleiro[ol][oc]->cor == BRANCA) ? ol - dl : dl - ol;
+    
+    
+    switch (peca) {
+        case PEAO:
+            if (movimento == 1 || (movimento == 2 && (ol == 6 || ol == 1)))
+                return True;
+            break;
+        case TORRE:
+            if (ol == dl || oc == dc)
+                return True;
+            break;
+        case CAVALO:
+            if ((abs(dl - ol) == 1 && abs(dc - oc) == 2) || (abs(dc - oc) == 1 && abs(dl - ol) == 2))
+                return True;
+            break;
+        case BISPO:
+            if (abs(dl - ol) == abs(dc - oc))
+                return True;
+            break;
+        case RAINHA:
+            if (ol == dl || oc == dc)
+                return True;
+            else if (abs(dl - ol) == abs(dc - oc))
+                return True;
+            break;
+        case REI:
+            if (abs(dl - ol) == 1 || abs(dc - oc) == 1)
+                return True;
+            break;
+    }
+    
+    return False;
+}
+
+int verificar_jogador_atual(struct Soldado *tabuleiro[8][8], coord crd) {
+    int ol = crd.origem_linha;
+    int oc = crd.origem_coluna;
+    
+    if(!coordenada_valida(tabuleiro, crd)) return False;
+    
+    // usar a função atributo para evitar falha de fragmentação
+    int peca = tabuleiro[ol][oc]->nome;
+    
+    if (tabuleiro[ol][oc]->cor == jogador_atual) {
+        jogador_atual = (jogador_atual == BRANCA) ? PRETA : BRANCA;
+        return True;
+    }
+    
+    printf("\033[5;35HAINDA NÃO É SUA VEZ DE JOGAR!\033[1H");
+    return False;
 }
 
 void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario)
