@@ -26,18 +26,12 @@ int menu()
 void coordenada(int linha, char coluna, int *destino_linha, int *destino_coluna)
 {
     *destino_linha = 8 - linha;
-    if (coluna == 'a') *destino_coluna = 0;
-    else if (coluna == 'b') *destino_coluna = 1;
-    else if (coluna == 'c') *destino_coluna = 2;
-    else if (coluna == 'd') *destino_coluna = 3;
-    else if (coluna == 'e') *destino_coluna = 4;
-    else if (coluna == 'f') *destino_coluna = 5;
-    else if (coluna == 'g') *destino_coluna = 6;
-    else if (coluna == 'h') *destino_coluna = 7;
+    if (coluna >= 'a' && coluna <= 'h')
+        *destino_coluna = coluna % 'a';
     else *destino_coluna = 24;
 }
 
-void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct Soldado pp[])
+void inicializar(Peca *tabuleiro[8][8], Peca pb[], Peca pp[])
 {
     int peca;
 
@@ -83,7 +77,7 @@ void inicializar(struct Soldado *tabuleiro[8][8], struct Soldado pb[], struct So
     roque_preta = True;
 }
 
-void configurar(int cor_tabuleiro[])
+void configurar(Cor *cor)
 {
     int tema;
 
@@ -101,47 +95,49 @@ void configurar(int cor_tabuleiro[])
     switch (tema)
     {
     case 1:
-        cor_tabuleiro[0]  = 107;
-        cor_tabuleiro[1] = 47;
-        cor_tabuleiro[2] = 40;
+        cor->cor_1 = 107;
+        cor->cor_2 = 47;
+        cor->borda = 40;
         break;
     case 2:
-        cor_tabuleiro[0] = 103;
-        cor_tabuleiro[1] = 43;
-        cor_tabuleiro[2] = 46;
+        cor->cor_1 = 103;
+        cor->cor_2 = 43;
+        cor->borda = 46;
         break;
     case 3:
-        cor_tabuleiro[0] = 104;
-        cor_tabuleiro[1] = 44;
-        cor_tabuleiro[2] = 45;
+        cor->cor_1 = 104;
+        cor->cor_2 = 44;
+        cor->borda = 45;
         break;
     case 4:
-        cor_tabuleiro[0] = 106;
-        cor_tabuleiro[1] = 46;
-        cor_tabuleiro[2] = 44;
+        cor->cor_1 = 106;
+        cor->cor_2 = 46;
+        cor->borda = 44;
         break;
     }
     printf("Tema %d selecionado.\n", tema);
-    sleep(2);
+    sleep(1);
     system("clear");
 }
 
-void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
+void interface(Peca *tabuleiro[8][8], Cor cor)
 {
     int i, j, num_linha=8, cor_atual;
-    int cor_borda = cor_tabuleiro[2];
+    //int cor_borda = cor.borda;
     system("clear");
     sleep(0.5);
 
-    printf("\n\033[%dm                             \033[m\n", cor_borda);
+    printf("\n\033[%dm                             \033[m\n", cor.borda);
     for (i = 0; i < 8; ++i)
     {
-        printf("\033[%dm %d \033[m", cor_borda, num_linha--);
+        printf("\033[%dm %d \033[m", cor.borda, num_linha--);
 
         for (j = 0; j < 8; ++j)
         {
-            if ((i + j) % 2 == 0) cor_atual = cor_tabuleiro[0];
-            else cor_atual = cor_tabuleiro[1];
+            // cor_atual = ((i + j) % 2 == 0)?cor.cor_1:cor.cor_2;
+
+            if ((i + j) % 2 == 0) cor_atual = cor.cor_1;
+            else cor_atual = cor.cor_2;
 
             if (tabuleiro[i][j] != NULL)
             {
@@ -170,12 +166,12 @@ void interface(struct Soldado *tabuleiro[8][8], int cor_tabuleiro[])
             }
             else printf("\033[%dm   \033[m", cor_atual);
         }
-        printf("\033[%dm  \033[m\n", cor_borda);
+        printf("\033[%dm  \033[m\n", cor.borda);
     }
-    printf ("\033[%dm    a  b  c  d  e  f  g  h   \033[m\n", cor_borda);
+    printf ("\033[%dm    a  b  c  d  e  f  g  h   \033[m\n", cor.borda);
 }
 
-int atributo(struct Soldado *peca, enum id_atributo atributo)
+int atributo(Peca *peca, enum id_atributo atributo)
 {
     if (peca != NULL)
         if (atributo == NOME) return peca->nome;
@@ -204,18 +200,16 @@ int promacao_peao()
     return peca;
 }
 
-void peao(struct Soldado *tabuleiro[8][8], coord crd)
+void peao(Peca *tabuleiro[8][8], Coordenada crd)
 {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
     int dl = crd.destino_linha;
     int dc = crd.destino_coluna;
-    int pular_2_casas=False;
+    int pular_2_casas = (ol == 1 || ol == 6) ? True : False;
     int actl = ol, actc = oc;
     int adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
-    int movimento = (tabuleiro[ol][oc]->cor == BRANCA) ? ol - dl : dl - ol;
-
-    if (ol == 1 || ol == 6) pular_2_casas = True;
+    int movimento = abs(ol - dl);
 
     if (oc == dc && tabuleiro[dl][dc] == NULL)
     {
@@ -273,7 +267,7 @@ void peao(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
-void torre(struct Soldado *tabuleiro[8][8], coord crd)
+void torre(Peca *tabuleiro[8][8], Coordenada crd)
 {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
@@ -287,7 +281,8 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
     int roque = (cor_adversario == PRETA) ? roque_branca : roque_preta;
-    struct Soldado *p_torre = tabuleiro[ol][oc], *p_peca = tabuleiro[dl][dc];
+    // int p_peca = atributo(tabuleiro[dl][dc], NOME);
+    Peca *p_torre = tabuleiro[ol][oc], *p_peca = tabuleiro[dl][dc];
 
     if (norte)
     {
@@ -345,18 +340,19 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
             if (roque)
-                if (tabuleiro[ol][oc]->cor == PRETA)
+                if (tabuleiro[dl][dc]->cor == PRETA)
                     roque_preta = False;
                 else
                     roque_branca = False;
         }
     }
-    
+
     if ((leste || oeste) && p_peca != NULL && roque)
     {
         auxc = oc;
         while (auxc < 3 || auxc > 5)
         {
+            // c == 0 ? auxc++ : auxc--;
             if (oc == 0) auxc++;
             else auxc--;
             if (tabuleiro[dl][auxc] != NULL)
@@ -381,7 +377,7 @@ void torre(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
-void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
+void cavalo(Peca *tabuleiro[8][8], Coordenada crd)
 {
     printf("\033[2;35HCAVALO\033[1H");
 
@@ -391,21 +387,21 @@ void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
     int dc = crd.destino_coluna;
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
-    int auxl = ol - dl;
-    int auxc = oc - dc;
+    int auxl = abs(ol - dl);
+    int auxc = abs(oc - dc);
     int mover = tabuleiro[dl][dc] == NULL || adversario == cor_adversario;
 
-    if (auxl == 2 || auxl == -2)
+    if (auxl == 2)
     {
-        if ((auxc == 1 || auxc == -1) && mover)
+        if ((auxc == 1) && mover)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
         }
     }
-    else if (auxl == 1 || auxl == -1)
+    else if (auxl == 1)
     {
-        if ((auxc == 2 || auxc == -2) && mover)
+        if ((auxc == 2) && mover)
         {
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             tabuleiro[ol][oc] = NULL;
@@ -413,7 +409,7 @@ void cavalo(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
-void bispo(struct Soldado *tabuleiro[8][8], coord crd)
+void bispo(Peca *tabuleiro[8][8], Coordenada crd)
 {
     printf("\033[2;35HBISPO\033[1H");
 
@@ -511,7 +507,7 @@ void bispo(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
-void rainha(struct Soldado *tabuleiro[8][8], coord crd)
+void rainha(Peca *tabuleiro[8][8], Coordenada crd)
 {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
@@ -611,7 +607,7 @@ void rainha(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
-void rei(struct Soldado *tabuleiro[8][8], coord crd)
+void rei(Peca *tabuleiro[8][8], Coordenada crd)
 {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
@@ -624,8 +620,8 @@ void rei(struct Soldado *tabuleiro[8][8], coord crd)
     int oeste = (ol == dl || ol > dl) && oc > dc;
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
-    int mover_vertical = (oc - dc == 1 || oc - dc == -1);
-    int mover_horizontal = (ol - dl == 1 || ol - dl == -1);
+    int mover_vertical = abs(oc - dc) == 1;
+    int mover_horizontal = abs(ol - dl) == 1;
 
     if (mover_horizontal || mover_vertical)
         if (norte)
@@ -686,7 +682,7 @@ void rei(struct Soldado *tabuleiro[8][8], coord crd)
         }
 }
 
-void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
+void mover_peca(Peca *tabuleiro[8][8], Coordenada crd)
 {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
@@ -711,7 +707,7 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
         
         reiniciar_en_passant (tabuleiro, adversario);
 
-        coord posicao_rei = localiza_rei(tabuleiro, adversario);
+        Coordenada posicao_rei = localiza_rei(tabuleiro, adversario);
         int xeque_cont = xeque_mate(tabuleiro, posicao_rei);
         char cor_adversario[10];
         if (adversario == BRANCA)
@@ -725,7 +721,7 @@ void mover_peca(struct Soldado *tabuleiro[8][8], coord crd)
     }
 }
 
-int coordenada_valida(struct Soldado *tabuleiro[8][8] , coord crd) {
+int coordenada_valida(Peca *tabuleiro[8][8] , Coordenada crd) {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
     int dl = crd.destino_linha;
@@ -772,7 +768,7 @@ int coordenada_valida(struct Soldado *tabuleiro[8][8] , coord crd) {
     return False;
 }
 
-int verificar_jogador_atual(struct Soldado *tabuleiro[8][8], coord crd) {
+int verificar_jogador_atual(Peca *tabuleiro[8][8], Coordenada crd) {
     int ol = crd.origem_linha;
     int oc = crd.origem_coluna;
     
@@ -790,7 +786,7 @@ int verificar_jogador_atual(struct Soldado *tabuleiro[8][8], coord crd) {
     return False;
 }
 
-void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario)
+void reiniciar_en_passant(Peca *tabuleiro[8][8], int adversario)
 {
     int linha, coluna;
     
@@ -803,9 +799,9 @@ void reiniciar_en_passant(struct Soldado *tabuleiro[8][8], int adversario)
     }
 }
 
-coord localiza_rei (struct Soldado *tabuleiro[8][8], int cor)
+Coordenada localiza_rei (Peca *tabuleiro[8][8], int cor)
 {
-    coord posicao_rei;
+    Coordenada posicao_rei;
     
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
@@ -821,7 +817,7 @@ coord localiza_rei (struct Soldado *tabuleiro[8][8], int cor)
     return posicao_rei;
 }
 
-int xeque_torre (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+int xeque_torre (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
   int ol = posicao.origem_linha;
   int oc = posicao.origem_coluna;
@@ -886,7 +882,7 @@ int xeque_torre (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
     return False;
 }
 
-int xeque_bispo (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+int xeque_bispo (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int ol = posicao.origem_linha;
     int oc = posicao.origem_coluna;
@@ -933,13 +929,13 @@ int xeque_bispo (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
     return False;  
 }
 
-int xeque_cavalo (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+int xeque_cavalo (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int ol = posicao.origem_linha;
     int oc = posicao.origem_coluna;
     int auxl = ol;
     int auxc = oc;
-    struct Soldado *aux;
+    Peca *aux;
     int adversario = cor == BRANCA ? PRETA : BRANCA;
     
     int varia_linha[8] = {-2, -2, -1, -1, 1, 1, 2, 2};
@@ -957,13 +953,13 @@ int xeque_cavalo (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
     return False;  
 }
 
-int xeque_peao (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+int xeque_peao (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int ol = posicao.origem_linha;
     int oc = posicao.origem_coluna;
     int auxl = ol;
     int auxc = oc;
-    struct Soldado *aux;
+    Peca *aux;
     int avanco = cor == BRANCA ? -1 : 1;
     int adversario = cor == BRANCA ? PRETA : BRANCA; 
     
@@ -982,7 +978,7 @@ int xeque_peao (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
     return False;           
 }
 
-int xeque_rainha (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+int xeque_rainha (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
   int ol = posicao.origem_linha;
   int oc = posicao.origem_coluna;
@@ -1086,7 +1082,7 @@ int xeque_rainha (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
     return False;        
 }
 
-int em_xeque (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
+int em_xeque (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int xeques = 0;
     
@@ -1098,13 +1094,13 @@ int em_xeque (struct Soldado *tabuleiro[8][8], coord posicao, int cor)
     return xeques;
 }
 
-int xeque_mate (struct Soldado *tabuleiro[8][8], coord posicao_rei)
+int xeque_mate (Peca *tabuleiro[8][8], Coordenada posicao_rei)
 {
     int ol = posicao_rei.origem_linha;
     int oc = posicao_rei.origem_coluna;
     int posicoes_invalidas = 0;
-    struct Soldado *aux;
-    coord auxcoord;
+    Peca *aux;
+    Coordenada auxcoord;
     int cor = tabuleiro[ol][oc]->cor;
     int xeques = 1;
     int varia_linha[8] = {-1, -1, -1, 0, 1, 1, 1, 0};

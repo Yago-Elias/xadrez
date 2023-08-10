@@ -4,12 +4,17 @@ int executa = True, fim_partida = True;
 
 int main() 
 {
-    struct Soldado *tabuleiro[8][8] = {NULL};
-    struct Soldado peca_b[16], peca_p[16];
-    int cor_tabuleiro[] = {104, 44, 45};
+    Peca *tabuleiro[8][8] = {NULL};
+    Peca peca_b[16], peca_p[16];
+    Cor cor;
+    Coordenada coordenadas;
+    //int cor_tabuleiro[] = {104, 44, 45};
     int linha, opc_menu;
     char coluna;
-    coord coordenadas;
+
+    cor.cor_1 = 104;
+    cor.cor_2 = 44;
+    cor.borda = 45;
 
     while (executa)
     {
@@ -22,7 +27,7 @@ int main()
         {
             case JOGAR:
                 fim_partida = False;
-                interface(tabuleiro, cor_tabuleiro);
+                interface(tabuleiro, cor);
                 printf("\nLANCE: ");
                 scanf(" %c%d", &coluna, &linha);
                 coordenada(linha, coluna, &coordenadas.origem_linha, &coordenadas.origem_coluna);
@@ -31,7 +36,7 @@ int main()
                 mover_peca(tabuleiro, coordenadas);
             break;
             case CONFIG:
-                configurar(cor_tabuleiro);
+                configurar(&cor);
                 fim_partida = True;
             break;
             case SAIR:
