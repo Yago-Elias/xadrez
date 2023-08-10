@@ -281,7 +281,6 @@ void torre(Peca *tabuleiro[8][8], Coordenada crd)
     int adversario = atributo(tabuleiro[dl][dc], COR);
     int cor_adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
     int roque = (cor_adversario == PRETA) ? roque_branca : roque_preta;
-    // int p_peca = atributo(tabuleiro[dl][dc], NOME);
     Peca *p_torre = tabuleiro[ol][oc], *p_peca = tabuleiro[dl][dc];
 
     if (norte)
@@ -333,7 +332,7 @@ void torre(Peca *tabuleiro[8][8], Coordenada crd)
         }
     }
 
-    if (livre)
+    if (livre && (norte || leste || sul || oeste))
     {
         if (tabuleiro[dl][dc] == NULL || adversario == cor_adversario)
         {
@@ -352,9 +351,7 @@ void torre(Peca *tabuleiro[8][8], Coordenada crd)
         auxc = oc;
         while (auxc < 3 || auxc > 5)
         {
-            // c == 0 ? auxc++ : auxc--;
-            if (oc == 0) auxc++;
-            else auxc--;
+            oc == 0 ? auxc++ : auxc--;
             if (tabuleiro[dl][auxc] != NULL)
             {
                 livre = False;
@@ -774,7 +771,7 @@ int verificar_jogador_atual(Peca *tabuleiro[8][8], Coordenada crd) {
     
     if(!coordenada_valida(tabuleiro, crd)) return False;
     
-    // usar a função atributo para evitar falha de fragmentação
+    // usar a função atributo, se necessário, para evitar falha de fragmentação
     int peca = tabuleiro[ol][oc]->nome;
     
     if (tabuleiro[ol][oc]->cor == jogador_atual) {
