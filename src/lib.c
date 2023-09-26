@@ -173,12 +173,11 @@ void interface(Peca *tabuleiro[8][8], Cor cor)
 
 int atributo(Peca *peca, enum id_atributo atributo)
 {
-    if (peca != NULL)
-        if (atributo == NOME) return peca->nome;
-        else if (atributo == COR) return peca->cor;
-        else if (atributo == CAPTURADA) return peca->capturada;
-        else if (atributo == ESPECIAL) return peca->movimento_especial;
-    else return False;
+    if (peca == NULL) return False;
+    else if (atributo == NOME) return peca->nome;
+    else if (atributo == COR) return peca->cor;
+    else if (atributo == CAPTURADA) return peca->capturada;
+    else if (atributo == ESPECIAL) return peca->movimento_especial;
 }
 
 int promacao_peao()
@@ -796,7 +795,7 @@ void reiniciar_en_passant(Peca *tabuleiro[8][8], int adversario)
     }
 }
 
-Coordenada localiza_rei (Peca *tabuleiro[8][8], int cor)
+Coordenada localiza_rei(Peca *tabuleiro[8][8], int cor)
 {
     Coordenada posicao_rei;
     
@@ -814,7 +813,7 @@ Coordenada localiza_rei (Peca *tabuleiro[8][8], int cor)
     return posicao_rei;
 }
 
-int xeque_torre (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
+int xeque_torre(Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
   int ol = posicao.origem_linha;
   int oc = posicao.origem_coluna;
@@ -879,7 +878,7 @@ int xeque_torre (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
     return False;
 }
 
-int xeque_bispo (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
+int xeque_bispo(Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int ol = posicao.origem_linha;
     int oc = posicao.origem_coluna;
@@ -926,7 +925,7 @@ int xeque_bispo (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
     return False;  
 }
 
-int xeque_cavalo (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
+int xeque_cavalo(Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int ol = posicao.origem_linha;
     int oc = posicao.origem_coluna;
@@ -950,7 +949,7 @@ int xeque_cavalo (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
     return False;  
 }
 
-int xeque_peao (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
+int xeque_peao(Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int ol = posicao.origem_linha;
     int oc = posicao.origem_coluna;
@@ -975,7 +974,7 @@ int xeque_peao (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
     return False;           
 }
 
-int xeque_rainha (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
+int xeque_rainha(Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
   int ol = posicao.origem_linha;
   int oc = posicao.origem_coluna;
@@ -1079,7 +1078,7 @@ int xeque_rainha (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
     return False;        
 }
 
-int em_xeque (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
+int em_xeque(Peca *tabuleiro[8][8], Coordenada posicao, int cor)
 {
     int xeques = 0;
     
@@ -1091,7 +1090,7 @@ int em_xeque (Peca *tabuleiro[8][8], Coordenada posicao, int cor)
     return xeques;
 }
 
-int xeque_mate (Peca *tabuleiro[8][8], Coordenada posicao_rei)
+int xeque_mate(Peca *tabuleiro[8][8], Coordenada posicao_rei)
 {
     int ol = posicao_rei.origem_linha;
     int oc = posicao_rei.origem_coluna;
