@@ -208,9 +208,11 @@ void peao(Peca *tabuleiro[8][8], Coordenada crd)
     int pular_2_casas = (ol == 1 || ol == 6) ? True : False;
     int actl = ol, actc = oc;
     int adversario = (tabuleiro[ol][oc]->cor == PRETA) ? BRANCA : PRETA;
+    int direcao_de_ataque = (tabuleiro[ol][oc]->cor == BRANCA) ? -1 : 1;
+    int direcao_correta = (dl - ol)/direcao_de_ataque > 0;
     int movimento = abs(ol - dl);
 
-    if (oc == dc && tabuleiro[dl][dc] == NULL)
+    if (oc == dc && tabuleiro[dl][dc] == NULL && direcao_correta)
     {
         if (movimento == 1)
         {
@@ -227,7 +229,7 @@ void peao(Peca *tabuleiro[8][8], Coordenada crd)
             tabuleiro[ol][oc] = NULL;
         }
     }
-    else if (atributo(tabuleiro[dl][dc], COR) == adversario && movimento == 1)
+    else if (atributo(tabuleiro[dl][dc], COR) == adversario && movimento == 1 && direcao_correta)
     {
         int avanco = (tabuleiro[ol][oc]->cor == BRANCA) ? ol > dl : ol < dl;
 
@@ -240,6 +242,20 @@ void peao(Peca *tabuleiro[8][8], Coordenada crd)
         }
         else if (avanco && oc > dc)
         {
+            tabuleiro[dl][dc] = tabuleiro[ol][oc];
+            actl = dl;
+            actc = dc;
+            tabuleiro[ol][oc] = NULL;
+        }
+    }
+    else if (direcao_correta && abs(oc - dc) == 1)
+    {
+        Peca *alvo = tabuleiro[ol][dc];
+                        
+        if (alvo != NULL && alvo->movimento_especial == True && alvo->cor == adversario && alvo->nome == PEAO)
+        {
+            printf("\033[2;35HEN PASSANT %d %d\033[1H", ol, dc);
+            tabuleiro[ol][dc] = NULL;
             tabuleiro[dl][dc] = tabuleiro[ol][oc];
             actl = dl;
             actc = dc;
