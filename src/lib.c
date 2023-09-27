@@ -87,35 +87,45 @@ void configurar(Cor *cor)
     printf("=============================\n");
     printf("            TEMA             \n");
     printf("-----------------------------\n");
-    printf("           TEMA 1 \033[%dm  \033[%dm  \033[%dm  \033[m     \n", 103, 43, 46);
-    printf("           TEMA 2 \033[%dm  \033[%dm  \033[%dm  \033[m     \n", 104, 44, 45);
-    printf("           TEMA 3 \033[%dm  \033[%dm  \033[%dm  \033[m     \n", 106, 46, 44);
-    printf("           TEMA 4 \033[%dm  \033[%dm  \033[%dm  \033[m     \n", 107, 47, 40);
+    printf("       TEMA 1 \033[%dm  \033[%dm  \033[%dm  \033[m\n", 103, 43, 46);
+    printf("       TEMA 2 \033[%dm  \033[%dm  \033[%dm  \033[m\n", 104, 44, 45);
+    printf("       TEMA 3 \033[%dm  \033[%dm  \033[%dm  \033[m\n", 106, 46, 44);
+    printf("       TEMA 4 \033[%dm  \033[%dm  \033[%dm  \033[m\n", 107, 47, 40);
     printf("=============================\nTEMA>");
+
+    if (cor->cor_1 == 103)
+        printf("\033[4;6H*");
+    else if (cor->cor_1 == 104)
+        printf("\033[5;6H*");
+    else if (cor->cor_1 == 106)
+        printf("\033[6;6H*");
+    else if (cor->cor_1 == 107)
+        printf("\033[7;6H*");
+    printf("\033[9;6H");
 
     scanf(" %d", &tema);
 
     switch (tema)
     {
     case 1:
-        cor->cor_1 = 107;
-        cor->cor_2 = 47;
-        cor->borda = 40;
-        break;
-    case 2:
         cor->cor_1 = 103;
         cor->cor_2 = 43;
         cor->borda = 46;
         break;
-    case 3:
+    case 2:
         cor->cor_1 = 104;
         cor->cor_2 = 44;
         cor->borda = 45;
         break;
-    case 4:
+    case 3:
         cor->cor_1 = 106;
         cor->cor_2 = 46;
         cor->borda = 44;
+        break;
+    case 4:
+        cor->cor_1 = 107;
+        cor->cor_2 = 47;
+        cor->borda = 40;
         break;
     }
     printf("Tema %d selecionado.\n", tema);
