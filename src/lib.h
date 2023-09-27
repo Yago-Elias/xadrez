@@ -37,8 +37,6 @@ typedef struct Cor
     int cor_1, cor_2, borda;
 } Cor;
 
-extern int roque_branca, roque_preta;
-
 // menu do jogo
 int menu();
 
@@ -83,3 +81,6 @@ int em_xeque(Peca *tabuleiro[8][8], Coordenada posicao, int cor);
 
 // rei em xeque mate
 int xeque_mate(Peca *tabuleiro[8][8], Coordenada posicao_rei);
+
+// inicializa de fato o jogo
+void execute();
