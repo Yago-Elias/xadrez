@@ -9,3 +9,4 @@ Etapas de desenvolvimento:
 - [x] Posicionar as peças no tabuleiro
 - [x] Movimento das peças
 - [ ] Mostrar registro dos movimentos das peças
+- [ ] Multijogador na rede local
